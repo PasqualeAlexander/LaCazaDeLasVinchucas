@@ -16,5 +16,13 @@ public class Opinion {
 
 	public LocalDate getFecha() {
 		return fecha;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public TipoDeOpinion getOpinion() {
+		return opinion;
 	} 
 }
