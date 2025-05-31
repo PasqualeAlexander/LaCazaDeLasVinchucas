@@ -1,4 +1,4 @@
-package ar.edu.unq.vinchucas;
+package ar.edu.unq.vinchucas.usuario;
 
 public class NivelExperto extends NivelVariable {
 

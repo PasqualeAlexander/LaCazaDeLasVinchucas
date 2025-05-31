@@ -1,4 +1,4 @@
-package ar.edu.unq.vinchucas;
+package ar.edu.unq.vinchucas.usuario;
 
 import java.time.LocalDate;
 
@@ -32,7 +32,7 @@ public abstract class NivelVariable implements NivelDeUsuario {
 	private boolean cumpleCondicionesDeMuestras(Usuario usuario) {
 		LocalDate fechaLimite = LocalDate.now().minusDays(30);
         long muestrasUltimos30Dias = usuario.getMuestrasEnviadas().stream()
-                .filter(muestra-> !muestra.getFecha().isBefore(fechaLimite))
+                .filter(muestra-> !muestra.getFechaCreacion().isBefore(fechaLimite))
                 .count();
         return muestrasUltimos30Dias >= 20;
 	}

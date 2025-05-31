@@ -1,14 +1,16 @@
-package ar.edu.unq.vinchucas;
+package ar.edu.unq.vinchucas.muestra;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.unq.vinchucas.usuario.Usuario;
+
 public class Muestra {
     private final String foto;
     private final String ubicacion;
     private final LocalDate fechaCreacion;
-    private final String nombreUsuario;
+    private final Usuario usuario;
     private final List<Opinion> opiniones;
     private EstadoMuestra estado;
     private TipoDeOpinion resultado;
@@ -41,8 +43,32 @@ public class Muestra {
         }
     }
 
-    private void verificarEstado() {
+    private boolean admiteOpiniones() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private void verificarEstado() {
         // Lógica para verificar el estado según las opiniones
         // Se implementará más adelante
     }
+
+	public boolean estaVerificada() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public TipoDeOpinion getResultado() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setResultado(TipoDeOpinion resultado) { // TODO: Privado
+		this.resultado = resultado;
+	}
+
+	public LocalDate getFechaUltimaVotacion() { // TODO: Implement
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

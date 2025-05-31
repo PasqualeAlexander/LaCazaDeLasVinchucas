@@ -14,7 +14,7 @@ public class FiltroPorTipoInsecto implements Filtro {
     @Override
     public List<Muestra> filtrar(List<Muestra> muestras) {
         return muestras.stream()
-                .filter(muestra -> muestra.getResultadoActual().equals(tipoInsecto))
+                .filter(muestra -> muestra.getResultado().equals(tipoInsecto))
                 .toList();
     }
 } 

@@ -1,4 +1,4 @@
-package ar.edu.unq.vinchucas;
+package ar.edu.unq.vinchucas.muestra;
 
 public enum TipoDeOpinion {
 	VINCHUCA_INFESTANS, VINCHUCA_SORDIDA, VINCHUCA_GUASAYANA, CHINCHE_FOLIADA, PHTIA_CHINCHE, NINGUNA, IMAGEN_POCO_CLARA;
