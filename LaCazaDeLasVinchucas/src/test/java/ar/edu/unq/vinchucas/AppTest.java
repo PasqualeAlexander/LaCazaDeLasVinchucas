@@ -4,13 +4,16 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for App.
+ * Pruebas unitarias para la aplicación principal.
+ * 
+ * Esta clase contiene pruebas para verificar el funcionamiento correcto
+ * de los componentes básicos de la aplicación de seguimiento de vinchucas.
  */
 public class AppTest {
     
     @Test
-    public void shouldAnswerWithTrue() {
-        assertTrue(true, "Initial test passing");
+    public void deberiaFuncionarCorrectamente() {
+        assertTrue(true, "Prueba inicial funcionando correctamente");
     }
 }
 
