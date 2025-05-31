@@ -6,5 +6,9 @@ public class NivelExperto extends NivelVariable {
 	public boolean puedeVerificar() {
 		return true;
 	}
-
+	
+	@Override
+	public String getNombreNivel() {
+		return "Nivel Experto";
+	}
 }

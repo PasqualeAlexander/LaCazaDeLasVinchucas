@@ -7,4 +7,8 @@ public class NivelBasico extends NivelVariable {
 		return false;
 	}
 
+	@Override
+	public String getNombreNivel() {
+		return "Nivel Basico";
+	}
 }

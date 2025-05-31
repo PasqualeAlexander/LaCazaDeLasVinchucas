@@ -11,4 +11,8 @@ public class NivelInvestigador implements NivelDeUsuario {
 	public void actualizarNivel(Usuario usuario) {
 	}
 	
+	@Override
+	public String getNombreNivel() {
+		return "Nivel Investigador";
+	}
 }

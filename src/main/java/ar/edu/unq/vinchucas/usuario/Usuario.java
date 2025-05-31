@@ -50,6 +50,10 @@ public class Usuario {
 		nivel.actualizarNivel(null);
 	}
 
+	public NivelDeUsuario getNivel() {
+		return this.nivel;
+	}
+	
 	public void setNivel(NivelDeUsuario nivelUsuario) {
 		this.nivel = nivelUsuario;
 	}
