@@ -6,11 +6,11 @@ import java.util.List;
 
 public class FiltroCompuesto implements Filtro {
     private final List<Filtro> filtros;
-    private final OperadorLogico operador;
+    private final OperadorStrategy operadorStrategy;
 
     public FiltroCompuesto(OperadorLogico operador) {
         this.filtros = new ArrayList<>();
-        this.operador = operador;
+        this.operadorStrategy = OperadorStrategyFactory.crearOperador(operador);
     }
 
     public void agregarFiltro(Filtro filtro) {
@@ -23,19 +23,8 @@ public class FiltroCompuesto implements Filtro {
             return muestras;
         }
 
-        List<Muestra> resultado = new ArrayList<>(muestras);
-        
-        for (Filtro filtro : filtros) {
-            List<Muestra> resultadoFiltro = filtro.filtrar(muestras);
-            
-            if (operador == OperadorLogico.AND) {
-                resultado.retainAll(resultadoFiltro);
-            } else {
-                resultado.addAll(resultadoFiltro);
-                resultado = resultado.stream().distinct().toList();
-            }
-        }
-
-        return resultado;
+        return muestras.stream()
+                .filter(muestra -> operadorStrategy.evaluar(muestra, filtros))
+                .toList();
     }
 } 

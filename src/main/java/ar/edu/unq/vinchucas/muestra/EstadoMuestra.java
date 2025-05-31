@@ -1,7 +1,6 @@
-package ar.edu.unq.vinchucas.muestra;
+package ar.edu.unq.vinchucas;
 
 public enum EstadoMuestra {
     NO_VERIFICADA,
     VERIFICADA,
-    VOTACION_PARCIAL
-} 
+    }

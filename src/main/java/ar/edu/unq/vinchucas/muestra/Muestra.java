@@ -1,6 +1,5 @@
-package ar.edu.unq.vinchucas.muestra;
+package ar.edu.unq.vinchucas;
 
-import ar.edu.unq.vinchucas.usuario.Usuario;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +8,10 @@ public class Muestra {
     private final String foto;
     private final String ubicacion;
     private final LocalDate fechaCreacion;
-    private final Usuario usuario;
+    private final String nombreUsuario;
     private final List<Opinion> opiniones;
     private EstadoMuestra estado;
+    private TipoDeOpinion resultado;
 
     public Muestra(String foto, String ubicacion, Usuario usuario) {
         this.foto = foto;
@@ -35,12 +35,14 @@ public class Muestra {
     }
 
     public void agregarOpinion(Opinion opinion) {
-        opiniones.add(opinion);
-        verificarEstado();
+        if(this.admiteOpiniones()) {
+        	opiniones.add(opinion);
+            verificarEstado();
+        }
     }
 
     private void verificarEstado() {
         // Lógica para verificar el estado según las opiniones
         // Se implementará más adelante
     }
-} 
+}

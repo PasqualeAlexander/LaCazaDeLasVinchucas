@@ -1,28 +1,18 @@
-package ar.edu.unq.vinchucas.muestra;
+package ar.edu.unq.vinchucas;
 
-import ar.edu.unq.vinchucas.usuario.Usuario;
 import java.time.LocalDate;
-
 public class Opinion {
-    private final TipoOpinion tipo;
-    private final Usuario usuario;
-    private final LocalDate fecha;
+	private Usuario usuario;
+	private TipoDeOpinion opinion;
+	private LocalDate fecha;
+	
+	public Opinion(Usuario usuario, TipoDeOpinion opinion) {
+		this.usuario=usuario;
+		this.opinion=opinion;
+		fecha= LocalDate.now();
+	}
 
-    public Opinion(TipoOpinion tipo, Usuario usuario) {
-        this.tipo = tipo;
-        this.usuario = usuario;
-        this.fecha = LocalDate.now();
-    }
-
-    public TipoOpinion getTipo() {
-        return tipo;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-} 
+	public LocalDate getFecha() {
+		return fecha;
+	} 
+}

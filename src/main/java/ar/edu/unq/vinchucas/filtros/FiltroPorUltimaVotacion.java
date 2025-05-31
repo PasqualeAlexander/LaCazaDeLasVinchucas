@@ -4,11 +4,11 @@ import ar.edu.unq.vinchucas.muestra.Muestra;
 import java.time.LocalDate;
 import java.util.List;
 
-public class FiltroPorFecha implements Filtro {
+public class FiltroPorUltimaVotacion implements Filtro {
     private final LocalDate fechaInicio;
     private final LocalDate fechaFin;
 
-    public FiltroPorFecha(LocalDate fechaInicio, LocalDate fechaFin) {
+    public FiltroPorUltimaVotacion(LocalDate fechaInicio, LocalDate fechaFin) {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
     }
@@ -21,7 +21,10 @@ public class FiltroPorFecha implements Filtro {
     }
 
     private boolean estaEnRangoFecha(Muestra muestra) {
-        LocalDate fechaMuestra = muestra.getFechaCreacion();
-        return !fechaMuestra.isBefore(fechaInicio) && !fechaMuestra.isAfter(fechaFin);
+        LocalDate fechaUltimaVotacion = muestra.getFechaUltimaVotacion();
+        if (fechaUltimaVotacion == null) {
+            return false;
+        }
+        return !fechaUltimaVotacion.isBefore(fechaInicio) && !fechaUltimaVotacion.isAfter(fechaFin);
     }
 } 
