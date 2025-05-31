@@ -16,8 +16,9 @@ public class Usuario {
 		this.programa = null;
 	}
 	
+	
 	public void opinar(Muestra muestra, Opinion opinion) {
-		muestra.agregarOpinion(opinion);
+		muestra.agregarOpinion(this, opinion);
 	}
 	
 	public void enviarMuestra(Muestra muestraAEnviar) {
