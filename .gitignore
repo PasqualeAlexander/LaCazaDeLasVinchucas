@@ -1,7 +1,17 @@
-# Eclipse project files
-/.metadata/
-/bin/
+# Eclipse
+.metadata/
+bin/
+.settings/
+.classpath
+.project
 
-# macOS system files
+# Maven
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# macOS
 .DS_Store
 **/.DS_Store
