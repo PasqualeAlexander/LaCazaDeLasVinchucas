@@ -15,7 +15,7 @@ public class NivelInvestigadorTest {
 	@Test
 	public void testActualizarNivelNoCambiaElNivelDelUsuario() {
 		NivelInvestigador nivel = new NivelInvestigador();
-		Usuario usuario = new Usuario("user", "pass", null, null);
+		Usuario usuario = new Usuario("user", "pass", null);
 		usuario.setNivel(nivel);
 
 		nivel.actualizarNivel(usuario);

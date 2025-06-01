@@ -3,8 +3,6 @@ package ar.edu.unq.vinchucas.usuario;
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
-import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,18 +11,16 @@ import static org.mockito.Mockito.*;
 class UsuarioTest {
 
 	private Usuario usuario;
+	private RepositorioDeMuestras repositorioMock;
 	private Muestra muestraMock;
 	private Opinion opinionMock;
-	private RepositorioDeMuestras muestrasMock;
-	private RepositorioDeOpiniones opinionesMock;
 
 	@BeforeEach
 	void setUp() {
+		repositorioMock = mock(RepositorioDeMuestras.class);
 		muestraMock = mock(Muestra.class);
 		opinionMock = mock(Opinion.class);
-		muestrasMock = mock(RepositorioDeMuestras.class);
-		opinionesMock = mock(RepositorioDeOpiniones.class);
-		usuario = new Usuario("alex", "1234", muestrasMock, opinionesMock);
+		usuario = new Usuario("alex", "1234", repositorioMock);
 	}
 
 	@Test
@@ -35,9 +31,8 @@ class UsuarioTest {
 
 	@Test
 	void testEnviarMuestraAgregaMuestraAlRepositorio() {
-		assertEquals(0, usuario.getMuestrasEnviadas().size());
 		usuario.enviarMuestra(muestraMock);
-		assertEquals(1, usuario.getMuestrasEnviadas().size());
+		verify(repositorioMock).agregarMuestra(muestraMock);
 	}
 
 	@Test
@@ -51,6 +46,10 @@ class UsuarioTest {
 		assertEquals("nuevaClave", usuario.getContraseña());
 	}
 
+	@Test
+	void testRepositorioEsElEsperado() {
+		assertEquals(repositorioMock, usuario.getRepositorio());
+	}
 	
 /* 
 	@Test

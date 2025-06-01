@@ -3,23 +3,23 @@ package ar.edu.unq.vinchucas.usuario;
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
-import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Usuario {
 	private final String nombreUsuario;
 	private String contraseña;
+	private final RepositorioDeMuestras repositorio;
 	private NivelDeUsuario nivel;
-	private final RepositorioDeMuestras muestras;
-	private final RepositorioDeOpiniones opiniones;
+	private List<Opinion> opinionesEnviadas;
+	private List<Muestra> muestrasEnviadas;
 	
-	public Usuario(String nombre, String contraseña, RepositorioDeMuestras muestras, RepositorioDeOpiniones opiniones) {
+	public Usuario(String nombre, String contraseña, RepositorioDeMuestras repositorio) {
 		this.nombreUsuario = nombre;
 		this.contraseña = contraseña;
-		this.muestras = muestras;
-		this.opiniones = opiniones;
+		this.repositorio = repositorio;
+		this.opinionesEnviadas = new ArrayList<>();
+		this.muestrasEnviadas = new ArrayList<>();
 	}
 	
 	public void opinar(Muestra muestra, Opinion opinion) {
@@ -27,7 +27,7 @@ public class Usuario {
 	}
 	
 	public void enviarMuestra(Muestra muestraAEnviar) {
-		muestras.agregarMuestra(muestraAEnviar);
+		repositorio.agregarMuestra(muestraAEnviar);
 	}
 
 	public String getNombreUsuario() {
@@ -39,7 +39,7 @@ public class Usuario {
 	}
 
 	public RepositorioDeMuestras getRepositorio() {
-		return muestras;
+		return repositorio;
 	}
 
 	public void setContraseña(String contraseña) {
@@ -59,10 +59,10 @@ public class Usuario {
 	}
 
 	public List<Muestra> getMuestrasEnviadas() {
-		return muestras.getMuestras();
+		return muestrasEnviadas;
 	}
 	
 	public List<Opinion> getOpinionesEnviadas() {
-		return opiniones.getOpiniones();
+		return opinionesEnviadas;
 	}
 }

@@ -13,7 +13,8 @@ public class Muestra {
     private final Usuario usuario;
     private final List<Opinion> opiniones;
     private EstadoMuestra estado;
-    
+    private TipoDeOpinion resultado;
+
     public Muestra(String foto, String ubicacion, Usuario usuario) {
         this.foto = foto;
         this.ubicacion = ubicacion;
@@ -60,6 +61,10 @@ public class Muestra {
 	public TipoDeOpinion getResultado() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setResultado(TipoDeOpinion resultado) { // TODO: Privado
+		this.resultado = resultado;
 	}
 
 	public LocalDate getFechaUltimaVotacion() { // TODO: Implement
