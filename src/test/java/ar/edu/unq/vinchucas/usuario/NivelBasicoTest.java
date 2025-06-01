@@ -1,18 +1,30 @@
 package ar.edu.unq.vinchucas.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.Opinion;
+import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
+import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
 import ar.edu.unq.vinchucas.muestra.TipoDeOpinion;
 
 public class NivelBasicoTest {
+	private RepositorioDeMuestras muestrasMock;
+	private RepositorioDeOpiniones opinionesMock;
+	
+	@BeforeEach
+	public void setUp() {
+		muestrasMock = mock(RepositorioDeMuestras.class);
+		opinionesMock = mock(RepositorioDeOpiniones.class);
+	}
 
     @Test
     public void testPuedeVerificarDevuelveFalse() {
@@ -23,14 +35,14 @@ public class NivelBasicoTest {
     @Test
     public void testActualizarNivelCambiaANivelExpertoCuandoCumpleRequisitos() {
         NivelBasico nivel = new NivelBasico();
-        Usuario usuario = new Usuario("usuarioTest", "password", null);
+        Usuario usuario = new Usuario("usuarioTest", "password", muestrasMock, opinionesMock);
         usuario.setNivel(nivel);
         
         List<Muestra> muestras = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             Muestra muestra = new Muestra("foto" + i, "loc" + i, usuario) {
             };
-            muestras.add(muestra);
+            usuario.enviarMuestra(muestra);
         }
 
         List<Opinion> opiniones = new ArrayList<>();
@@ -47,19 +59,19 @@ public class NivelBasicoTest {
     @Test
     public void testActualizarNivelPermaneceNivelBasicoCuandoNoCumpleRequisitos() {
         NivelBasico nivel = new NivelBasico();
-        Usuario usuario = new Usuario("usuarioTest", "password", null);
+        Usuario usuario = new Usuario("usuarioTest", "password", null, null);
         usuario.setNivel(nivel);
 
         List<Muestra> muestras = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Muestra muestra = new Muestra("foto" + i, "loc" + i, usuario) {
             };
-            muestras.add(muestra);
+            usuario.enviarMuestra(muestra);
         }
 
         List<Opinion> opiniones = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            opiniones.add(new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS));
+            usuario.opinar(muestraMock, new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS));
         }
 
         usuario.getMuestrasEnviadas().addAll(muestras);
