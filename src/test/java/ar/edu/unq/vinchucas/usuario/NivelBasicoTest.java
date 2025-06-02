@@ -2,12 +2,6 @@ package ar.edu.unq.vinchucas.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ar.edu.unq.vinchucas.muestra.Muestra;
@@ -41,17 +35,19 @@ public class NivelBasicoTest {
 
 	@Test
 	public void testActualizarNivelCambiaANivelExpertoCuandoCumpleRequisitos() {
-	    LocalDate fechaHoy = LocalDate.now();
-	    
-	    when(muestraMock.getFechaCreacion()).thenReturn(fechaHoy);
-	    when(opinionMock.getFecha()).thenReturn(fechaHoy);
+	    RepositorioDeMuestras repoMuestras = new RepositorioDeMuestras();
+	    RepositorioDeOpiniones repoOpiniones = new RepositorioDeOpiniones();
+	    Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones);
+	    Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario);
+	    Opinion opinion = new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
 
 	    for (int i = 0; i < 20; i++) {
-	        usuario.enviarMuestra(muestraMock);
-	        usuario.opinar(muestraMock, opinionMock);
+	        usuario.enviarMuestra(muestra);
+	        usuario.opinar(muestra, opinion);
 	    }
-	    usuario.getNivel().actualizarNivel(usuario);
-	    
+
+	    assertEquals(20, usuario.getMuestrasEnviadas().size()); // Verifica persistencia
+	    assertEquals(20, usuario.getOpinionesEnviadas().size()); // Verifica persistencia
 	    assertEquals("Nivel Experto", usuario.getNivel().getNombreNivel());
 	}
 
@@ -61,7 +57,7 @@ public class NivelBasicoTest {
 			usuario.enviarMuestra(muestraMock);
 			usuario.opinar(muestraMock, opinionMock);
 		}
-	
+
 		assertEquals("Nivel Basico", usuario.getNivel().getNombreNivel());
 	}
 }

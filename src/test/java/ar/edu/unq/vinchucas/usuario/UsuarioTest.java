@@ -4,6 +4,7 @@ import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
+import ar.edu.unq.vinchucas.muestra.TipoDeOpinion;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,28 +16,33 @@ class UsuarioTest {
 	private Usuario usuario;
 	private RepositorioDeMuestras muestras;
 	private RepositorioDeOpiniones opiniones;
-	private Muestra muestraMock;
-	private Opinion opinionMock;
 
 	@BeforeEach
 	void setUp() {
 		muestras = mock(RepositorioDeMuestras.class);
 		opiniones = mock(RepositorioDeOpiniones.class);
-		muestraMock = mock(Muestra.class);
-		opinionMock = mock(Opinion.class);
 		usuario = new Usuario("alex", "1234", muestras, opiniones);
 	}
 
 	@Test
 	void testOpinarAgregaOpinionALaMuestra() {
-		usuario.opinar(muestraMock, opinionMock);
-		verify(muestraMock).agregarOpinion(opinionMock);
+		RepositorioDeMuestras repoMuestras = new RepositorioDeMuestras();
+	    RepositorioDeOpiniones repoOpiniones = new RepositorioDeOpiniones();
+	    Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones);
+	    Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario);
+	    Opinion opinion = new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+		usuario.opinar(muestra, opinion);
+		assertEquals(1, usuario.getOpinionesEnviadas().size());
 	}
 
 	@Test
 	void testEnviarMuestraAgregaMuestraAlRepositorio() {
-		usuario.enviarMuestra(muestraMock);
-		verify(muestras).agregarMuestra(muestraMock);
+		RepositorioDeMuestras repoMuestras = new RepositorioDeMuestras();
+	    RepositorioDeOpiniones repoOpiniones = new RepositorioDeOpiniones();
+	    Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones);
+	    Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario);
+		usuario.enviarMuestra(muestra);
+		assertEquals(1, usuario.getMuestrasEnviadas().size());
 	}
 
 	@Test
@@ -54,23 +60,7 @@ class UsuarioTest {
 	void testRepositorioEsElEsperado() {
 		assertEquals(muestras, usuario.getRepositorio());
 	}
-	
-/* 
-	@Test
-	void testAgregarOpinionALaListaDeUsuario() { // NO va a correr porque no está hecho el admiteOpiniones()
-		Opinion opinion = mock(Opinion.class);
-		usuario.opinar(muestraMock, opinion);
-		usuario.getOpinionesEnviadas();
-		assertTrue(usuario.getOpinionesEnviadas().contains(opinion));
-	}
 
-	@Test
-	void testAgregarMuestraALaListaDeUsuario() { // NO va a correr porque no se agrega la muestra
-		usuario.enviarMuestra(muestraMock);
-		usuario.getMuestrasEnviadas();
-		assertTrue(usuario.getMuestrasEnviadas().contains(muestraMock));
-	}
-*/
 	@Test
 	void testNivelInvestigadorPuedeVerificar() { 
 		NivelDeUsuario investigador = new NivelInvestigador();

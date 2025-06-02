@@ -22,18 +22,15 @@ public abstract class NivelVariable implements NivelDeUsuario {
 
 	private boolean cumpleCondicionDeRevisones(Usuario usuario) {
 		LocalDate fechaLimite = LocalDate.now().minusDays(30);
-        long opinionesUltimos30Dias = usuario.getOpinionesEnviadas().stream()
-                .filter(opinion -> !opinion.getFecha().isBefore(fechaLimite))
-                .count();
-        
-        return opinionesUltimos30Dias >= 20;
+		long opinionesUltimos30Dias = usuario.getOpinionesEnviadas().stream()
+				.filter(opinion -> !opinion.getFecha().isBefore(fechaLimite)).count();
+		return opinionesUltimos30Dias >= 20;
 	}
 
 	private boolean cumpleCondicionesDeMuestras(Usuario usuario) {
 		LocalDate fechaLimite = LocalDate.now().minusDays(30);
-        long muestrasUltimos30Dias = usuario.getMuestrasEnviadas().stream()
-                .filter(muestra-> !muestra.getFechaCreacion().isBefore(fechaLimite))
-                .count();
-        return muestrasUltimos30Dias >= 20;
+		long muestrasUltimos30Dias = usuario.getMuestrasEnviadas().stream()
+				.filter(muestra -> !muestra.getFechaCreacion().isBefore(fechaLimite)).count();
+		return muestrasUltimos30Dias >= 20;
 	}
 }
