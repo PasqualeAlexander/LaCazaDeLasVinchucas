@@ -1,6 +1,8 @@
 package ar.edu.unq.vinchucas.usuario;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
+import ar.edu.unq.vinchucas.aplicacion.Aplicacion;
+import ar.edu.unq.vinchucas.aplicacion.ExcepcionesAplicacion;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
@@ -13,13 +15,19 @@ public class Usuario {
 	private NivelDeUsuario nivel;
 	private final RepositorioDeMuestras muestras;
 	private final RepositorioDeOpiniones opiniones;
+	private final Aplicacion aplicacion;
 	
-	public Usuario(String nombre, String contraseña, RepositorioDeMuestras muestras, RepositorioDeOpiniones opiniones) {
+	public Usuario(String nombre, String contraseña, RepositorioDeMuestras muestras, RepositorioDeOpiniones opiniones, Aplicacion aplicacion) {
 		this.nombreUsuario = nombre;
 		this.contraseña = contraseña;
 		this.nivel = new NivelBasico();
 		this.muestras = muestras;
 		this.opiniones = opiniones;
+		this.aplicacion = aplicacion;
+	}
+	
+	public void setNombre(String nombre) throws ExcepcionesAplicacion {
+		aplicacion.estaDisponibleElNombre(nombre);
 	}
 	
 	public void opinar(Muestra muestra, Opinion opinion) {
@@ -34,6 +42,10 @@ public class Usuario {
 
 	public String getNombreUsuario() {
 		return nombreUsuario;
+	}
+	
+	public Aplicacion getAplicacion() {
+		return aplicacion;
 	}
 
 	public String getContraseña() {

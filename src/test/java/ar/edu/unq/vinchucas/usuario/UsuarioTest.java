@@ -1,6 +1,7 @@
 package ar.edu.unq.vinchucas.usuario;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
+import ar.edu.unq.vinchucas.aplicacion.*;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
@@ -14,6 +15,7 @@ import static org.mockito.Mockito.*;
 class UsuarioTest {
 
 	private Usuario usuario;
+	private Aplicacion aplicacion;
 	private RepositorioDeMuestras muestras;
 	private RepositorioDeOpiniones opiniones;
 
@@ -21,16 +23,16 @@ class UsuarioTest {
 	void setUp() {
 		muestras = mock(RepositorioDeMuestras.class);
 		opiniones = mock(RepositorioDeOpiniones.class);
-		usuario = new Usuario("alex", "1234", muestras, opiniones);
+		usuario = new Usuario("alex", "1234", muestras, opiniones, aplicacion);
 	}
 
 	@Test
 	void testOpinarAgregaOpinionALaMuestra() {
 		RepositorioDeMuestras repoMuestras = new RepositorioDeMuestras();
 	    RepositorioDeOpiniones repoOpiniones = new RepositorioDeOpiniones();
-	    Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones);
-	    Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario);
+	    Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones, aplicacion);
 	    Opinion opinion = new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+	    Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario, opinion);
 		usuario.opinar(muestra, opinion);
 		assertEquals(1, usuario.getOpinionesEnviadas().size());
 	}
@@ -39,8 +41,9 @@ class UsuarioTest {
 	void testEnviarMuestraAgregaMuestraAlRepositorio() {
 		RepositorioDeMuestras repoMuestras = new RepositorioDeMuestras();
 	    RepositorioDeOpiniones repoOpiniones = new RepositorioDeOpiniones();
-	    Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones);
-	    Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario);
+	    Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones, aplicacion);
+	    Opinion opinion = new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+	    Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario, opinion);
 		usuario.enviarMuestra(muestra);
 		assertEquals(1, usuario.getMuestrasEnviadas().size());
 	}

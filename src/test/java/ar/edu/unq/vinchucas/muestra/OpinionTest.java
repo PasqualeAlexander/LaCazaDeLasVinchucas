@@ -15,7 +15,7 @@ class OpinionTest {
     
     @BeforeEach
     void setUp() {
-        usuario = new Usuario("testUser", "password", null, null);
+        usuario = new Usuario("testUser", "password", null, null, null);
         tipoOpinion = TipoDeOpinion.VINCHUCA_INFESTANS;
         fechaCreacion = LocalDate.now();
         opinion = new Opinion(usuario, tipoOpinion);
@@ -25,7 +25,7 @@ class OpinionTest {
     void testCreacionDeOpinion() {
         assertNotNull(opinion);
         assertEquals(usuario, opinion.getUsuario());
-        assertEquals(tipoOpinion, opinion.getOpinion());
+        assertEquals(tipoOpinion, opinion.getTipoDeOpinion());
         assertEquals(fechaCreacion, opinion.getFecha());
     }
     
@@ -51,7 +51,7 @@ class OpinionTest {
     @Test
     void testOpinionConDiferenteTipoDeOpinion() {
         Opinion opinionChinche = new Opinion(usuario, TipoDeOpinion.CHINCHE_FOLIADA);
-        assertNotEquals(opinion.getOpinion(), opinionChinche.getOpinion());
-        assertEquals(TipoDeOpinion.CHINCHE_FOLIADA, opinionChinche.getOpinion());
+        assertNotEquals(opinion.getTipoDeOpinion(), opinionChinche.getTipoDeOpinion());
+        assertEquals(TipoDeOpinion.CHINCHE_FOLIADA, opinionChinche.getTipoDeOpinion());
     }
 } 

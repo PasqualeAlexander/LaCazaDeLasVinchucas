@@ -1,7 +1,6 @@
 package ar.edu.unq.vinchucas.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 public class NivelInvestigadorTest {
@@ -15,7 +14,7 @@ public class NivelInvestigadorTest {
 	@Test
 	public void testActualizarNivelNoCambiaElNivelDelUsuario() {
 		NivelInvestigador nivel = new NivelInvestigador();
-		Usuario usuario = new Usuario("user", "pass", null, null);
+		Usuario usuario = new Usuario("user", "pass", null, null, null);
 		usuario.setNivel(nivel);
 
 		nivel.actualizarNivel(usuario);

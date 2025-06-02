@@ -1,6 +1,7 @@
 package ar.edu.unq.vinchucas.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
+import ar.edu.unq.vinchucas.aplicacion.*;
 import static org.mockito.Mockito.mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ public class NivelBasicoTest {
 	private Opinion opinionMock;
 	private RepositorioDeMuestras muestrasMock;
 	private RepositorioDeOpiniones opinionesMock;
+	private Aplicacion aplicacion;
 	private Usuario usuario;
 
 	@BeforeEach
@@ -23,7 +25,7 @@ public class NivelBasicoTest {
 		muestrasMock = mock(RepositorioDeMuestras.class);
 		opinionesMock = mock(RepositorioDeOpiniones.class);
 		opinionMock = mock(Opinion.class);
-		usuario = new Usuario("usuarioTest", "password", muestrasMock, opinionesMock);
+		usuario = new Usuario("usuarioTest", "password", muestrasMock, opinionesMock, aplicacion);
 
 	}
 
@@ -35,20 +37,21 @@ public class NivelBasicoTest {
 
 	@Test
 	public void testActualizarNivelCambiaANivelExpertoCuandoCumpleRequisitos() {
-	    RepositorioDeMuestras repoMuestras = new RepositorioDeMuestras();
-	    RepositorioDeOpiniones repoOpiniones = new RepositorioDeOpiniones();
-	    Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones);
-	    Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario);
-	    Opinion opinion = new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+		RepositorioDeMuestras repoMuestras = new RepositorioDeMuestras();
+		RepositorioDeOpiniones repoOpiniones = new RepositorioDeOpiniones();
+		TipoDeOpinion tipoDeOpinion = TipoDeOpinion.VINCHUCA_INFESTANS;
+		Opinion opinion = new Opinion(usuario, tipoDeOpinion);
+		Usuario usuario = new Usuario("testUser", "pass", repoMuestras, repoOpiniones, aplicacion);
+		Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario, opinion);
 
-	    for (int i = 0; i < 20; i++) {
-	        usuario.enviarMuestra(muestra);
-	        usuario.opinar(muestra, opinion);
-	    }
+		for (int i = 0; i < 20; i++) {
+			usuario.enviarMuestra(muestra);
+			usuario.opinar(muestra, opinion);
+		}
 
-	    assertEquals(20, usuario.getMuestrasEnviadas().size()); // Verifica persistencia
-	    assertEquals(20, usuario.getOpinionesEnviadas().size()); // Verifica persistencia
-	    assertEquals("Nivel Experto", usuario.getNivel().getNombreNivel());
+		assertEquals(20, usuario.getMuestrasEnviadas().size());
+		assertEquals(20, usuario.getOpinionesEnviadas().size());
+		assertEquals("Nivel Experto", usuario.getNivel().getNombreNivel());
 	}
 
 	@Test

@@ -5,13 +5,13 @@ import ar.edu.unq.vinchucas.usuario.Usuario;
 
 public class Opinion {
 	private Usuario usuario;
-	private TipoDeOpinion opinion;
+	private TipoDeOpinion tipo;
 	private LocalDate fecha;
-	
+
 	public Opinion(Usuario usuario, TipoDeOpinion opinion) {
-		this.usuario=usuario;
-		this.opinion=opinion;
-		fecha= LocalDate.now();
+		this.usuario = usuario;
+		this.tipo = opinion;
+		fecha = LocalDate.now();
 	}
 
 	public LocalDate getFecha() {
@@ -22,7 +22,7 @@ public class Opinion {
 		return usuario;
 	}
 
-	public TipoDeOpinion getOpinion() {
-		return opinion;
-	} 
+	public TipoDeOpinion getTipoDeOpinion() {
+		return tipo;
+	}
 }
