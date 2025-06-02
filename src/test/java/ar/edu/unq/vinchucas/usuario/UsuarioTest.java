@@ -3,6 +3,8 @@ package ar.edu.unq.vinchucas.usuario;
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
+import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,16 +13,18 @@ import static org.mockito.Mockito.*;
 class UsuarioTest {
 
 	private Usuario usuario;
-	private RepositorioDeMuestras repositorioMock;
+	private RepositorioDeMuestras muestras;
+	private RepositorioDeOpiniones opiniones;
 	private Muestra muestraMock;
 	private Opinion opinionMock;
 
 	@BeforeEach
 	void setUp() {
-		repositorioMock = mock(RepositorioDeMuestras.class);
+		muestras = mock(RepositorioDeMuestras.class);
+		opiniones = mock(RepositorioDeOpiniones.class);
 		muestraMock = mock(Muestra.class);
 		opinionMock = mock(Opinion.class);
-		usuario = new Usuario("alex", "1234", repositorioMock);
+		usuario = new Usuario("alex", "1234", muestras, opiniones);
 	}
 
 	@Test
@@ -32,7 +36,7 @@ class UsuarioTest {
 	@Test
 	void testEnviarMuestraAgregaMuestraAlRepositorio() {
 		usuario.enviarMuestra(muestraMock);
-		verify(repositorioMock).agregarMuestra(muestraMock);
+		verify(muestras).agregarMuestra(muestraMock);
 	}
 
 	@Test
@@ -48,7 +52,7 @@ class UsuarioTest {
 
 	@Test
 	void testRepositorioEsElEsperado() {
-		assertEquals(repositorioMock, usuario.getRepositorio());
+		assertEquals(muestras, usuario.getRepositorio());
 	}
 	
 /* 

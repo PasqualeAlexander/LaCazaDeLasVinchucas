@@ -13,7 +13,7 @@ public class Muestra {
     private final Usuario usuario;
     private final List<Opinion> opiniones;
     private EstadoMuestra estado;
-    private TipoDeOpinion resultado;
+    // Se saco la variable que guarda resultado ya que la misma se calcula en el momento que se llama.
 
     public Muestra(String foto, String ubicacion, Usuario usuario) {
         this.foto = foto;
@@ -45,7 +45,7 @@ public class Muestra {
 
     private boolean admiteOpiniones() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	private void verificarEstado() {
@@ -61,10 +61,6 @@ public class Muestra {
 	public TipoDeOpinion getResultado() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public void setResultado(TipoDeOpinion resultado) { // TODO: Privado
-		this.resultado = resultado;
 	}
 
 	public LocalDate getFechaUltimaVotacion() { // TODO: Implement

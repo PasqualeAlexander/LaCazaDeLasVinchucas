@@ -3,31 +3,33 @@ package ar.edu.unq.vinchucas.usuario;
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
-import java.util.ArrayList;
+import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
+
 import java.util.List;
 
 public class Usuario {
 	private final String nombreUsuario;
 	private String contraseña;
-	private final RepositorioDeMuestras repositorio;
 	private NivelDeUsuario nivel;
-	private List<Opinion> opinionesEnviadas;
-	private List<Muestra> muestrasEnviadas;
+	private final RepositorioDeMuestras muestras;
+	private final RepositorioDeOpiniones opiniones;
 	
-	public Usuario(String nombre, String contraseña, RepositorioDeMuestras repositorio) {
+	public Usuario(String nombre, String contraseña, RepositorioDeMuestras muestras, RepositorioDeOpiniones opiniones) {
 		this.nombreUsuario = nombre;
 		this.contraseña = contraseña;
-		this.repositorio = repositorio;
-		this.opinionesEnviadas = new ArrayList<>();
-		this.muestrasEnviadas = new ArrayList<>();
+		this.nivel = new NivelBasico();
+		this.muestras = muestras;
+		this.opiniones = opiniones;
 	}
 	
 	public void opinar(Muestra muestra, Opinion opinion) {
-		muestra.agregarOpinion(opinion);
+		opiniones.agregarOpinion(muestra, opinion);
+		nivel.actualizarNivel(this);
 	}
 	
 	public void enviarMuestra(Muestra muestraAEnviar) {
-		repositorio.agregarMuestra(muestraAEnviar);
+		muestras.agregarMuestra(muestraAEnviar);
+		nivel.actualizarNivel(this);
 	}
 
 	public String getNombreUsuario() {
@@ -39,7 +41,7 @@ public class Usuario {
 	}
 
 	public RepositorioDeMuestras getRepositorio() {
-		return repositorio;
+		return muestras;
 	}
 
 	public void setContraseña(String contraseña) {
@@ -47,7 +49,7 @@ public class Usuario {
 	}
 	
 	public void actualizarNivel() {
-		nivel.actualizarNivel(null);
+		nivel.actualizarNivel(this);
 	}
 
 	public NivelDeUsuario getNivel() {
@@ -59,10 +61,10 @@ public class Usuario {
 	}
 
 	public List<Muestra> getMuestrasEnviadas() {
-		return muestrasEnviadas;
+		return muestras.getMuestras();
 	}
 	
 	public List<Opinion> getOpinionesEnviadas() {
-		return opinionesEnviadas;
+		return opiniones.getOpiniones();
 	}
 }

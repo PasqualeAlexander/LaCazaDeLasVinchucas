@@ -1,72 +1,67 @@
 package ar.edu.unq.vinchucas.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.Opinion;
+import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
+import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
 import ar.edu.unq.vinchucas.muestra.TipoDeOpinion;
 
 public class NivelBasicoTest {
+	private Muestra muestraMock;
+	private Opinion opinionMock;
+	private RepositorioDeMuestras muestrasMock;
+	private RepositorioDeOpiniones opinionesMock;
+	private Usuario usuario;
 
-    @Test
-    public void testPuedeVerificarDevuelveFalse() {
-        NivelBasico nivel = new NivelBasico();
-        assertFalse(nivel.puedeVerificar());
-    }
+	@BeforeEach
+	public void setUp() {
+		muestraMock = mock(Muestra.class);
+		muestrasMock = mock(RepositorioDeMuestras.class);
+		opinionesMock = mock(RepositorioDeOpiniones.class);
+		opinionMock = mock(Opinion.class);
+		usuario = new Usuario("usuarioTest", "password", muestrasMock, opinionesMock);
 
-    @Test
-    public void testActualizarNivelCambiaANivelExpertoCuandoCumpleRequisitos() {
-        NivelBasico nivel = new NivelBasico();
-        Usuario usuario = new Usuario("usuarioTest", "password", null);
-        usuario.setNivel(nivel);
-        
-        List<Muestra> muestras = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            Muestra muestra = new Muestra("foto" + i, "loc" + i, usuario) {
-            };
-            muestras.add(muestra);
-        }
+	}
 
-        List<Opinion> opiniones = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            opiniones.add(new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS));
-        }
-        usuario.getMuestrasEnviadas().addAll(muestras); // Al resultanted el get le agrega que envia las 20 muestras
-        usuario.getOpinionesEnviadas().addAll(opiniones); // Al resultanted el get le agrega que envia las 20 opiniones
-        nivel.actualizarNivel(usuario);
+	@Test
+	public void testPuedeVerificarDevuelveFalse() {
+		NivelBasico nivel = new NivelBasico();
+		assertFalse(nivel.puedeVerificar());
+	}
 
-        assertEquals("Nivel Experto", usuario.getNivel().getNombreNivel());
-    }
+	@Test
+	public void testActualizarNivelCambiaANivelExpertoCuandoCumpleRequisitos() {
+	    LocalDate fechaHoy = LocalDate.now();
+	    
+	    when(muestraMock.getFechaCreacion()).thenReturn(fechaHoy);
+	    when(opinionMock.getFecha()).thenReturn(fechaHoy);
 
-    @Test
-    public void testActualizarNivelPermaneceNivelBasicoCuandoNoCumpleRequisitos() {
-        NivelBasico nivel = new NivelBasico();
-        Usuario usuario = new Usuario("usuarioTest", "password", null);
-        usuario.setNivel(nivel);
+	    for (int i = 0; i < 20; i++) {
+	        usuario.enviarMuestra(muestraMock);
+	        usuario.opinar(muestraMock, opinionMock);
+	    }
+	    usuario.getNivel().actualizarNivel(usuario);
+	    
+	    assertEquals("Nivel Experto", usuario.getNivel().getNombreNivel());
+	}
 
-        List<Muestra> muestras = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Muestra muestra = new Muestra("foto" + i, "loc" + i, usuario) {
-            };
-            muestras.add(muestra);
-        }
-
-        List<Opinion> opiniones = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            opiniones.add(new Opinion(usuario, TipoDeOpinion.VINCHUCA_INFESTANS));
-        }
-
-        usuario.getMuestrasEnviadas().addAll(muestras);
-        usuario.getOpinionesEnviadas().addAll(opiniones);
-
-        nivel.actualizarNivel(usuario);
-
-        assertEquals("Nivel Basico", usuario.getNivel().getNombreNivel()); // getNombreNivel es un metodo nuevo para no utilizar InstanceOF o isKindOf para comparar si es de la clase, simplemente de esta forma comparamos por strings
-    }
+	@Test
+	public void testActualizarNivelPermaneceNivelBasicoCuandoNoCumpleRequisitos() {
+		for (int i = 0; i < 10; i++) {
+			usuario.enviarMuestra(muestraMock);
+			usuario.opinar(muestraMock, opinionMock);
+		}
+	
+		assertEquals("Nivel Basico", usuario.getNivel().getNombreNivel());
+	}
 }

@@ -15,7 +15,7 @@ class OpinionTest {
     
     @BeforeEach
     void setUp() {
-        usuario = new Usuario("testUser", "password", null);
+        usuario = new Usuario("testUser", "password", null, null);
         tipoOpinion = TipoDeOpinion.VINCHUCA_INFESTANS;
         fechaCreacion = LocalDate.now();
         opinion = new Opinion(usuario, tipoOpinion);
