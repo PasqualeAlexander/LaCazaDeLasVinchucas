@@ -66,19 +66,19 @@ class UsuarioTest {
 
 	@Test
 	void testNivelInvestigadorPuedeVerificar() { 
-		NivelDeUsuario investigador = new NivelInvestigador();
+		INivelDeUsuario investigador = new NivelInvestigador();
 		assertTrue(investigador.puedeVerificar());
 	}
 
 	@Test
 	void testNivelBasicoNoPuedeVerificar() {
-		NivelDeUsuario basico = new NivelBasico();
+		INivelDeUsuario basico = new NivelBasico();
 		assertFalse(basico.puedeVerificar());
 	}
 
 	@Test
 	void testNivelExpertoPuedeVerificar() {
-		NivelDeUsuario experto = new NivelExperto();
+		INivelDeUsuario experto = new NivelExperto();
 		assertTrue(experto.puedeVerificar());
 	}
 }

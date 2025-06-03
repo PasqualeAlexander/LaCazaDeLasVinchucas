@@ -1,6 +1,6 @@
 package ar.edu.unq.vinchucas.usuario;
 
-public class NivelExperto extends NivelVariable {
+public class NivelExperto extends NivelDeUsuario {
 
 	@Override
 	public boolean puedeVerificar() {
@@ -10,5 +10,10 @@ public class NivelExperto extends NivelVariable {
 	@Override
 	public String getNombreNivel() {
 		return "Nivel Experto";
+	}
+	
+	@Override
+	public boolean esNivelExperto() {
+		return true;
 	}
 }

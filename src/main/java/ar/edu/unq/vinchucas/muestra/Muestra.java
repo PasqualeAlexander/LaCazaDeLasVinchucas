@@ -11,7 +11,7 @@ public class Muestra {
 	private final String ubicacion;
 	private final LocalDate fechaCreacion;
 	private final Usuario usuario; // Cambio Usuario por su nombre para no sobrecargar
-	private final List<Opinion> opiniones;
+	private final SistemaDeOpiniones sistemaDeOpiniones;
 	private EstadoMuestra estado;
 	// Se saco la variable que guarda resultado ya que la misma se calcula en el
 	// momento que se llama.
@@ -21,9 +21,10 @@ public class Muestra {
 		this.ubicacion = ubicacion;
 		this.usuario = usuario;
 		this.fechaCreacion = LocalDate.now();
-		this.opiniones = new ArrayList<>();
-		this.estado = EstadoMuestra.NO_VERIFICADA;
+		this.sistemaDeOpiniones = new SistemaDeOpiniones();
 		this.agregarOpinion(opinion);
+		this.estado = EstadoMuestra.NO_VERIFICADA;
+		;
 	}
 
 	public LocalDate getFechaCreacion() {
@@ -43,54 +44,31 @@ public class Muestra {
 	}
 
 	public void agregarOpinion(Opinion opinion) {
-		if (this.admiteOpiniones()) {
-			opiniones.add(opinion);
+			sistemaDeOpiniones.agregarOpinion(opinion);
 			verificarEstado();
 		}
-	}
 
-	private boolean admiteOpiniones() {
-
-		return true;
-	}
 
 	private void verificarEstado() {
-		// Lógica para verificar el estado según las opiniones
-		// Se implementará más adelante
+		if (this.correspondeVerificar()) {
+			estado = EstadoMuestra.VERIFICADA;
+		}
+	}
+	
+	private boolean correspondeVerificar() {
+		return sistemaDeOpiniones.correspondeVerificar();
 	}
 
 	public boolean estaVerificada() {
-		// TODO Auto-generated method stub
-		return false;
+		return estado==EstadoMuestra.VERIFICADA;
 	}
 
 	public TipoDeOpinion getResultado() {
-		// TODO Auto-generated method stub
+		return sistemaDeOpiniones.getResultado();
+	}
+
+	public LocalDate getFechaUltimaVotacion() { 
 		return null;
 	}
 
-	public LocalDate getFechaUltimaVotacion() { // TODO: Implement
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public TipoDeOpinion resultadoActual() {
-		java.util.Map<TipoDeOpinion, Integer> conteo = new java.util.HashMap<>();
-
-		for (Opinion opinion : opiniones) {
-			TipoDeOpinion tipo = opinion.getTipoDeOpinion();
-			conteo.put(tipo, conteo.getOrDefault(tipo, 0) + 1);
-		}
-
-		TipoDeOpinion masVotado = null;
-		int maxVotos = 0;
-
-		for (java.util.Map.Entry<TipoDeOpinion, Integer> entrada : conteo.entrySet()) {
-			if (entrada.getValue() > maxVotos) {
-				masVotado = entrada.getKey();
-				maxVotos = entrada.getValue();
-			}
-		}
-		return masVotado;
-	}
 }

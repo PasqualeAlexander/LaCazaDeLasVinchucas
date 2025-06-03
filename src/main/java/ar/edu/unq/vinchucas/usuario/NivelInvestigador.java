@@ -1,6 +1,6 @@
 package ar.edu.unq.vinchucas.usuario;
 
-public class NivelInvestigador implements NivelDeUsuario {
+public class NivelInvestigador extends NivelDeUsuario {
 
 	@Override
 	public boolean puedeVerificar() {
@@ -14,5 +14,10 @@ public class NivelInvestigador implements NivelDeUsuario {
 	@Override
 	public String getNombreNivel() {
 		return "Nivel Investigador";
+	}
+	
+	@Override
+	public boolean esNivelExperto() {
+		return true;
 	}
 }

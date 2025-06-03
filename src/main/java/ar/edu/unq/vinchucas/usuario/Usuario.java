@@ -12,7 +12,7 @@ import java.util.List;
 public class Usuario {
 	private final String nombreUsuario;
 	private String contraseña;
-	private NivelDeUsuario nivel;
+	private INivelDeUsuario nivel;
 	private final RepositorioDeMuestras muestras;
 	private final RepositorioDeOpiniones opiniones;
 	private final Aplicacion aplicacion;
@@ -64,11 +64,11 @@ public class Usuario {
 		nivel.actualizarNivel(this);
 	}
 
-	public NivelDeUsuario getNivel() {
+	public INivelDeUsuario getNivel() {
 		return this.nivel;
 	}
 	
-	public void setNivel(NivelDeUsuario nivelUsuario) {
+	public void setNivel(INivelDeUsuario nivelUsuario) {
 		this.nivel = nivelUsuario;
 	}
 
@@ -78,5 +78,13 @@ public class Usuario {
 	
 	public List<Opinion> getOpinionesEnviadas() {
 		return opiniones.getOpiniones();
+	}
+	
+	public boolean esNivelBasico() {
+		return this.getNivel().esNivelBasico();
+	}
+	
+	public boolean esNivelExperto() {
+		return this.getNivel().esNivelExperto();
 	}
 }
