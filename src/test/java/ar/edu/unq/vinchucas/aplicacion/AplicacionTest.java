@@ -1,29 +1,81 @@
 package ar.edu.unq.vinchucas.aplicacion;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.usuario.Usuario;
 
-class AplicacionTest {
-	private Aplicacion aplicacion;
-	private Usuario usuario;
+public class AplicacionTest {
 
-	@BeforeEach
-	void setUp() {
-		usuario = new Usuario("alex", "1234", null, null, null);
-		aplicacion = new Aplicacion();
-	}
+    private SistemaDeUsuarios sistemaDeUsuarios;
+    private SistemaDeMuestras sistemaDeMuestras;
+    private Aplicacion aplicacion;
 
-	@Test
-	void testNombreDisponibleYLuegoExcepcionPorDuplicado() throws ExcepcionesAplicacion {
-		assertTrue(aplicacion.estaDisponibleElNombre("alex"));
-		aplicacion.registrarUsuario(usuario);
-		ExcepcionesAplicacion excepcion = assertThrows(
-			ExcepcionesAplicacion.class,
-			() -> aplicacion.estaDisponibleElNombre("alex")
-		);
-		assertEquals("Ya hay un usuario con ese nombre, utiliza otro nombre por favor", excepcion.getMessage());
-	}
+    @BeforeEach
+    public void setUp() {
+        sistemaDeUsuarios = mock(SistemaDeUsuarios.class);
+        sistemaDeMuestras = mock(SistemaDeMuestras.class);
+        aplicacion = new Aplicacion(sistemaDeUsuarios, sistemaDeMuestras);
+    }
+
+    @Test
+    public void testRegistrarUsuarioValido() throws SistemaDeExcepciones {
+        Usuario usuarioMock = mock(Usuario.class);
+        when(usuarioMock.getNombreUsuario()).thenReturn("joaco");
+
+        aplicacion.registrarUsuario(usuarioMock);
+
+        verify(sistemaDeUsuarios).agregarUsuario(usuarioMock);
+    }
+
+    @Test
+    public void testRegistrarUsuarioNuloLanzaExcepcion() {
+    	SistemaDeExcepciones ex = assertThrows(SistemaDeExcepciones.class, () -> {
+            aplicacion.registrarUsuario(null);
+        });
+
+        assertEquals("El usuario no puede ser nulo", ex.getMessage());
+    }
+
+    @Test
+    public void testRegistrarUsuarioConNombreVacioLanzaExcepcion() {
+        Usuario usuarioMock = mock(Usuario.class);
+        when(usuarioMock.getNombreUsuario()).thenReturn("  "); // nombre en blacno
+
+        SistemaDeExcepciones ex = assertThrows(SistemaDeExcepciones.class, () -> {
+            aplicacion.registrarUsuario(usuarioMock);
+        });
+
+        assertEquals("El nombre es obligatorio", ex.getMessage());
+    }
+    
+    @Test
+    public void testRegistrarUsuarioConNombreDuplicadoLanzaExcepcion() throws SistemaDeExcepciones {
+        Usuario usuarioMock = mock(Usuario.class);
+        when(usuarioMock.getNombreUsuario()).thenReturn("juan123");
+
+        // Simulamos que el sistema lanza la excepción cuando se intenta registrar
+        doThrow(new SistemaDeExcepciones("El nombre ya está en uso"))
+            .when(sistemaDeUsuarios).agregarUsuario(usuarioMock);
+
+        SistemaDeExcepciones ex = assertThrows(SistemaDeExcepciones.class, () -> {
+            aplicacion.registrarUsuario(usuarioMock);
+        });
+
+        assertEquals("El nombre ya está en uso", ex.getMessage());
+    }
+    
+    @Test
+    public void testRegistrarMuestraGuardaEnLaAplicacion() {
+        Usuario usuarioMock = mock(Usuario.class);
+        Muestra muestraMock = mock(Muestra.class);
+
+        aplicacion.registrarMuestra(usuarioMock, muestraMock);
+
+        verify(usuarioMock).enviarMuestra(muestraMock);
+        verify(sistemaDeMuestras).registrarMuestra(muestraMock);
+    }
 }

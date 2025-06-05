@@ -2,7 +2,7 @@ package ar.edu.unq.vinchucas.usuario;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.aplicacion.Aplicacion;
-import ar.edu.unq.vinchucas.aplicacion.ExcepcionesAplicacion;
+import ar.edu.unq.vinchucas.aplicacion.SistemaDeExcepciones;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
@@ -15,22 +15,16 @@ public class Usuario {
 	private INivelDeUsuario nivel;
 	private final RepositorioDeMuestras muestras;
 	private final RepositorioDeOpiniones opiniones;
-	private final Aplicacion aplicacion;
 	
-	public Usuario(String nombre, String contraseña, RepositorioDeMuestras muestras, RepositorioDeOpiniones opiniones, Aplicacion aplicacion) {
+	public Usuario(String nombre, String contraseña, RepositorioDeMuestras muestras, RepositorioDeOpiniones opiniones) {
 		this.nombreUsuario = nombre;
 		this.contraseña = contraseña;
 		this.nivel = new NivelBasico();
 		this.muestras = muestras;
 		this.opiniones = opiniones;
-		this.aplicacion = aplicacion;
 	}
 	
-	public void setNombre(String nombre) throws ExcepcionesAplicacion {
-		aplicacion.estaDisponibleElNombre(nombre);
-	}
-	
-	public void opinar(Muestra muestra, Opinion opinion) {
+	public void opinar(Muestra muestra, Opinion opinion) throws SistemaDeExcepciones {
 		opiniones.agregarOpinion(muestra, opinion);
 		nivel.actualizarNivel(this);
 	}
@@ -43,13 +37,13 @@ public class Usuario {
 	public String getNombreUsuario() {
 		return nombreUsuario;
 	}
-	
-	public Aplicacion getAplicacion() {
-		return aplicacion;
-	}
 
-	public String getContraseña() {
-		return contraseña;
+	public void cambiarContraseña(String contraseñaActual, String nuevaContraseña) throws SistemaDeExcepciones {
+	    if (!this.contraseña.equals(contraseñaActual)) {
+	        throw new SistemaDeExcepciones("Contraseña actual incorrecta");
+	    }
+	    // Aca podriamso poner validaciones para requisitos de contraseña o algo por el estilo.
+	    this.contraseña = nuevaContraseña;
 	}
 
 	public RepositorioDeMuestras getRepositorio() {
@@ -86,5 +80,9 @@ public class Usuario {
 	
 	public boolean esNivelExperto() {
 		return this.getNivel().esNivelExperto();
+	}
+
+	public String getContraseña() {
+		return this.contraseña;
 	}
 }
