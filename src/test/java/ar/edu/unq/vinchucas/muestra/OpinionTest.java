@@ -1,11 +1,15 @@
 package ar.edu.unq.vinchucas.muestra;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import ar.edu.unq.vinchucas.aplicacion.SistemaDeExcepciones;
 import ar.edu.unq.vinchucas.usuario.Usuario;
 import java.time.LocalDate;
+
+import static org.mockito.Mockito.*;
 
 class OpinionTest {
     private Opinion opinion;
@@ -54,4 +58,35 @@ class OpinionTest {
         assertNotEquals(opinion.getTipoDeOpinion(), opinionChinche.getTipoDeOpinion());
         assertEquals(TipoDeOpinion.CHINCHE_FOLIADA, opinionChinche.getTipoDeOpinion());
     }
+    
+    @Test
+    void testOpinionExpertaSigueSiendoExpertaSiUsuarioSeVuelveBasico() {
+        Usuario usuarioExperto = mock(Usuario.class);
+        when(usuarioExperto.esNivelBasico()).thenReturn(false);
+        when(usuarioExperto.esNivelExperto()).thenReturn(true);
+
+        Opinion opinionExperta = new Opinion(usuarioExperto, TipoDeOpinion.VINCHUCA_SORDIDA);
+
+        when(usuarioExperto.esNivelBasico()).thenReturn(true);
+        when(usuarioExperto.esNivelExperto()).thenReturn(false);
+
+        assertTrue(opinionExperta.eraExpertoAlOpinar());
+    }
+    
+    @Test
+    void testOpinionBasicaSigueSiendoBasicaSiUsuarioSeVuelveExperto() throws SistemaDeExcepciones {
+        Usuario otroBasico = mock(Usuario.class);
+        when(otroBasico.esNivelBasico()).thenReturn(true);
+        when(otroBasico.esNivelExperto()).thenReturn(false);
+
+        Opinion opinionBasica = new Opinion(otroBasico, TipoDeOpinion.CHINCHE_FOLIADA);
+
+        when(otroBasico.esNivelBasico()).thenReturn(false);
+        when(otroBasico.esNivelExperto()).thenReturn(true);
+
+        assertFalse(opinionBasica.eraExpertoAlOpinar());
+    }
+
+    
+    
 } 

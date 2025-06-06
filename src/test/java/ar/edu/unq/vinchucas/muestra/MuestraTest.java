@@ -118,17 +118,14 @@ public class MuestraTest {
     }
 
     @Test
-    void testOpinionesSeGuardanCorrectamente() throws SistemaDeExcepciones {
-        Opinion opinion1 = new Opinion(usuarioExperto1, TipoDeOpinion.CHINCHE_FOLIADA);
-        Opinion opinion2 = new Opinion(usuarioExperto2, TipoDeOpinion.NINGUNA);
+    void testOpinionExpertaSigueSiendoExpertaSiUsuarioSeVuelveBasico() throws SistemaDeExcepciones {
+        muestra.agregarOpinion(opinionExperta1);
 
-        muestra.agregarOpinion(opinion1);
-        muestra.agregarOpinion(opinion2);
+        when(usuarioExperto1.esNivelBasico()).thenReturn(true);
+        when(usuarioExperto1.esNivelExperto()).thenReturn(false);
 
-        List<Opinion> opiniones = muestra.getOpiniones();
-        assertTrue(opiniones.contains(opinion1));
-        assertTrue(opiniones.contains(opinion2));
-        assertEquals(2, opiniones.size());
+        assertTrue(muestra.getOpiniones().get(0).eraExpertoAlOpinar());
     }
+    
 }
 

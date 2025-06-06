@@ -45,7 +45,7 @@ public class SistemaDeOpiniones implements Votable {
         Map<TipoDeOpinion, Integer> conteoExpertos = new HashMap<>();
 
         for (Opinion opinion : opiniones) {
-            if (opinion.getUsuario().esNivelExperto()) {
+            if (opinion.eraExpertoAlOpinar()) {
                 TipoDeOpinion tipo = opinion.getTipoDeOpinion();
                 conteoExpertos.put(tipo, conteoExpertos.getOrDefault(tipo, 0) + 1);
                 if (conteoExpertos.get(tipo) == 2) {
@@ -110,25 +110,25 @@ public class SistemaDeOpiniones implements Votable {
 		return opiniones.get(opiniones.size() - 1);
 	}
 
-    private void validarQueUsuarioPuedeOpinar(Usuario usuario) throws SistemaDeExcepciones {
-        if (this.yaOpinoElUsuario(usuario)) {
-            throw new SistemaDeExcepciones("El usuario ya opino sobre esta muestra.");
-        }
-        if (usuario.esNivelBasico() && this.hayVotoExperto()) {
-            throw new SistemaDeExcepciones("Un usuario de nivel básico no puede opinar si ya hay al menos un voto de usuario experto.");
-        }
-    }
+	private void validarQueUsuarioPuedeOpinar(Usuario usuario) throws SistemaDeExcepciones {
+	    if (this.yaOpinoElUsuario(usuario)) {
+	        throw new SistemaDeExcepciones("El usuario ya opino sobre esta muestra.");
+	    }
+	    if (usuario.esNivelBasico() && this.hayVotoExperto()) {
+	        throw new SistemaDeExcepciones("Un usuario de nivel básico no puede opinar si ya hay al menos un voto de usuario experto.");
+	    }
+	}
 
-    private boolean puedeOpinarElUsuario(Usuario usuario) {
-        return !yaOpinoElUsuario(usuario) && !(usuario.esNivelBasico() && hayVotoExperto());
-    }
+	private boolean puedeOpinarElUsuario(Usuario usuario) {
+	    return !yaOpinoElUsuario(usuario) && !(usuario.esNivelBasico() && hayVotoExperto());
+	}
 
     private boolean yaOpinoElUsuario(Usuario usuario) {
         return opiniones.stream().anyMatch(op -> op.getUsuario().equals(usuario));
     }
 
     private boolean hayVotoExperto() {
-        return opiniones.stream().anyMatch(op -> op.getUsuario().esNivelExperto());
+        return opiniones.stream().anyMatch(Opinion::eraExpertoAlOpinar);
     }
 
     private void reiniciarVotos() {

@@ -7,11 +7,15 @@ public class Opinion {
 	private Usuario usuario;
 	private TipoDeOpinion tipo;
 	private LocalDate fecha;
+	private boolean eraExpertoAlOpinar;
+
 
 	public Opinion(Usuario usuario, TipoDeOpinion opinion) {
 		this.usuario = usuario;
 		this.tipo = opinion;
 		fecha = LocalDate.now();
+		this.eraExpertoAlOpinar = usuario.esNivelExperto();
+
 	}
 
 	public LocalDate getFecha() {
@@ -24,5 +28,9 @@ public class Opinion {
 
 	public TipoDeOpinion getTipoDeOpinion() {
 		return tipo;
+	}
+	
+	public boolean eraExpertoAlOpinar() {
+		return eraExpertoAlOpinar;
 	}
 }
