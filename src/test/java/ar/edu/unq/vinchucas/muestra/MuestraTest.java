@@ -70,8 +70,11 @@ public class MuestraTest {
 
     @Test
     void testVotoExpertoInvalidaVotosBasicos() throws SistemaDeExcepciones {
-        Opinion opinionBasica = new Opinion(usuarioBasico, TipoDeOpinion.IMAGEN_POCO_CLARA);
+    	Usuario otroBasico = mock(Usuario.class);
+        when(otroBasico.esNivelBasico()).thenReturn(true);
 
+        Opinion opinionBasica = new Opinion(otroBasico, TipoDeOpinion.IMAGEN_POCO_CLARA);
+        
         muestra.agregarOpinion(opinionBasica);
         muestra.agregarOpinion(opinionExperta1);
 

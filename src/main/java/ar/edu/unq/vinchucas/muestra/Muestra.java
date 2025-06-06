@@ -33,8 +33,7 @@ public class Muestra {
         this.usuario = usuario;
         this.fechaCreacion = LocalDate.now();
         this.estado = EstadoMuestra.NO_VERIFICADA;
-        this.sistemaDeOpiniones = new SistemaDeOpiniones();
-        this.sistemaDeOpiniones.contabilizarVotoInicial(votoInicial);
+        this.sistemaDeOpiniones = new SistemaDeOpiniones(votoInicial);
     }
 
     public String getFoto() {

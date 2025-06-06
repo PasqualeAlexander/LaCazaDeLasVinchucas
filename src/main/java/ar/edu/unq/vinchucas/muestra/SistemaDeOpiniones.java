@@ -15,13 +15,12 @@ public class SistemaDeOpiniones implements Votable {
     private Map<TipoDeOpinion, Integer> votos;
     private List<String> historial;
 
-    public SistemaDeOpiniones() {
+    public SistemaDeOpiniones(TipoDeOpinion votoInicial) { // Se cambia el consturcot para que tambien gestione el voto inicial y sea responsabilidad pura del sistema.
         this.opiniones = new ArrayList<>();
         this.votos = new HashMap<>();
         this.historial = new ArrayList<>();
+        this.contabilizarVotoInicial(votoInicial);
     }
-
-    // === MÉTODOS PÚBLICOS PRINCIPALES ===
 
     public void agregarOpinion(Opinion opinion) throws SistemaDeExcepciones {
         this.validarQueUsuarioPuedeOpinar(opinion.getUsuario());
