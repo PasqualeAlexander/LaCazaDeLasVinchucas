@@ -1,7 +1,6 @@
 package ar.edu.unq.vinchucas.usuario;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
-import ar.edu.unq.vinchucas.aplicacion.Aplicacion;
 import ar.edu.unq.vinchucas.aplicacion.SistemaDeExcepciones;
 import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;

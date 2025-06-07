@@ -14,16 +14,18 @@ public class SistemaDeOpiniones implements Votable {
     private List<Opinion> opiniones;
     private Map<TipoDeOpinion, Integer> votos;
     private List<String> historial;
+    private ValidadorDeOpiniones validador;
 
     public SistemaDeOpiniones(TipoDeOpinion votoInicial) { // Se cambia el consturcot para que tambien gestione el voto inicial y sea responsabilidad pura del sistema.
         this.opiniones = new ArrayList<>();
         this.votos = new HashMap<>();
         this.historial = new ArrayList<>();
         this.contabilizarVotoInicial(votoInicial);
+        this.validador = new ValidadorDeOpiniones();
     }
 
     public void agregarOpinion(Opinion opinion) throws SistemaDeExcepciones {
-        this.validarQueUsuarioPuedeOpinar(opinion.getUsuario());
+        validador.validarQueUsuarioPuedeOpinar(opinion.getUsuario(), this.getOpiniones(), this.correspondeVerificar());
 
         TipoDeOpinion voto = opinion.getTipoDeOpinion();
         Usuario usuario = opinion.getUsuario();
@@ -38,7 +40,7 @@ public class SistemaDeOpiniones implements Votable {
     }
 
     public boolean admiteOpinionDeUsuario(Usuario usuario) {
-        return !this.correspondeVerificar() && this.puedeOpinarElUsuario(usuario);
+        return !this.correspondeVerificar() && validador.puedeOpinarElUsuario(usuario,this.getOpiniones());
     }
 
     public boolean correspondeVerificar() {
@@ -109,23 +111,6 @@ public class SistemaDeOpiniones implements Votable {
 	private Opinion getUltimaOpinion() {
 		return opiniones.get(opiniones.size() - 1);
 	}
-
-	private void validarQueUsuarioPuedeOpinar(Usuario usuario) throws SistemaDeExcepciones {
-	    if (this.yaOpinoElUsuario(usuario)) {
-	        throw new SistemaDeExcepciones("El usuario ya opino sobre esta muestra.");
-	    }
-	    if (usuario.esNivelBasico() && this.hayVotoExperto()) {
-	        throw new SistemaDeExcepciones("Un usuario de nivel básico no puede opinar si ya hay al menos un voto de usuario experto.");
-	    }
-	}
-
-	private boolean puedeOpinarElUsuario(Usuario usuario) {
-	    return !yaOpinoElUsuario(usuario) && !(usuario.esNivelBasico() && hayVotoExperto());
-	}
-
-    private boolean yaOpinoElUsuario(Usuario usuario) {
-        return opiniones.stream().anyMatch(op -> op.getUsuario().equals(usuario));
-    }
 
     private boolean hayVotoExperto() {
         return opiniones.stream().anyMatch(Opinion::eraExpertoAlOpinar);

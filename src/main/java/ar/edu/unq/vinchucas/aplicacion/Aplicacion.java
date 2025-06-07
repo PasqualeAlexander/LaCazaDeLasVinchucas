@@ -1,11 +1,6 @@
 package ar.edu.unq.vinchucas.aplicacion;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ar.edu.unq.vinchucas.muestra.Muestra;
-import ar.edu.unq.vinchucas.muestra.RepositorioDeMuestras;
-import ar.edu.unq.vinchucas.muestra.RepositorioDeOpiniones;
 import ar.edu.unq.vinchucas.usuario.*;
 
 public class Aplicacion {

@@ -15,5 +15,9 @@ public class SistemaDeMuestras {
 	public void registrarMuestra(Muestra muestra) {
 		muestras.add(muestra);
 	}
+	
+	public List<Muestra> getMuestras(){
+		return this.muestras;
+	}
 
 }
