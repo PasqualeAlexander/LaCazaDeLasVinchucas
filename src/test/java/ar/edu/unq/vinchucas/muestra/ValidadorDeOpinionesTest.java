@@ -43,7 +43,7 @@ public class ValidadorDeOpinionesTest {
         SistemaDeExcepciones se = assertThrows(SistemaDeExcepciones.class, () ->
             validador.validarQueUsuarioPuedeOpinar(usuario, opiniones, false)
         );
-        assertEquals("El usuario ya opino sobre esta muestra", se.getMessage());
+        assertEquals("El usuario ya ha opinado sobre esta muestra", se.getMessage());
     }
 
     @Test
@@ -51,6 +51,6 @@ public class ValidadorDeOpinionesTest {
         SistemaDeExcepciones se = assertThrows(SistemaDeExcepciones.class, () ->
             validador.validarQueUsuarioPuedeOpinar(usuario, opiniones, true)
         );
-        assertEquals("La muestra ya esta verificada", se.getMessage());
+        assertEquals("La muestra ya está verificada", se.getMessage());
     }
 }
