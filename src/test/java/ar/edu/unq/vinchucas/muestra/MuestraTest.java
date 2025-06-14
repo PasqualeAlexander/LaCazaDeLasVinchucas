@@ -124,6 +124,125 @@ public class MuestraTest {
 
         assertTrue(muestra.getOpiniones().get(0).eraExpertoAlOpinar());
     }
+
+    @Test
+    void testCreacionMuestraConFotoVacia() {
+        SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
+            new Muestra("", "Buenos Aires", usuarioBasico, TipoDeOpinion.VINCHUCA_INFESTANS);
+        });
+        assertEquals("La foto no puede estar vacía", thrown.getMessage());
+    }
+
+    @Test
+    void testCreacionMuestraConFotoNull() {
+        SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
+            new Muestra(null, "Buenos Aires", usuarioBasico, TipoDeOpinion.VINCHUCA_INFESTANS);
+        });
+        assertEquals("La foto no puede estar vacía", thrown.getMessage());
+    }
+
+    @Test
+    void testCreacionMuestraConUbicacionVacia() {
+        SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
+            new Muestra("foto.jpg", "", usuarioBasico, TipoDeOpinion.VINCHUCA_INFESTANS);
+        });
+        assertEquals("La ubicación no puede estar vacía", thrown.getMessage());
+    }
+
+    @Test
+    void testCreacionMuestraConUbicacionNull() {
+        SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
+            new Muestra("foto.jpg", null, usuarioBasico, TipoDeOpinion.VINCHUCA_INFESTANS);
+        });
+        assertEquals("La ubicación no puede estar vacía", thrown.getMessage());
+    }
+
+    @Test
+    void testCreacionMuestraConUsuarioNull() {
+        SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
+            new Muestra("foto.jpg", "Buenos Aires", null, TipoDeOpinion.VINCHUCA_INFESTANS);
+        });
+        assertEquals("El usuario no puede ser nulo", thrown.getMessage());
+    }
+
+    @Test
+    void testCreacionMuestraConVotoInicialNull() {
+        SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
+            new Muestra("foto.jpg", "Buenos Aires", usuarioBasico, null);
+        });
+        assertEquals("El voto inicial no puede ser nulo", thrown.getMessage());
+    }
+
+    @Test
+    void testGettersBasicos() throws SistemaDeExcepciones {
+        Muestra muestraTest = new Muestra("foto_test.jpg", "Córdoba", usuarioBasico, TipoDeOpinion.CHINCHE_FOLIADA);
+        
+        assertEquals("foto_test.jpg", muestraTest.getFoto());
+        assertEquals("Córdoba", muestraTest.getUbicacion());
+        assertEquals(usuarioBasico, muestraTest.getUsuario());
+        assertEquals(EstadoMuestra.NO_VERIFICADA, muestraTest.getEstado());
+        assertNotNull(muestraTest.getFechaCreacion());
+    }
+
+    @Test
+    void testGetNombreUsuario() throws SistemaDeExcepciones {
+        when(usuarioBasico.getNombreUsuario()).thenReturn("juan123");
+        
+        Muestra muestraTest = new Muestra("foto.jpg", "Buenos Aires", usuarioBasico, TipoDeOpinion.VINCHUCA_INFESTANS);
+        
+        assertEquals("juan123", muestraTest.getNombreUsuario());
+    }
+
+    @Test
+    void testGetOpiniones() throws SistemaDeExcepciones {
+        assertTrue(muestra.getOpiniones().isEmpty()); // Inicialmente vacía (solo cuenta el voto inicial del sistema)
+        
+        muestra.agregarOpinion(opinionExperta1);
+        assertEquals(1, muestra.getOpiniones().size());
+        assertTrue(muestra.getOpiniones().contains(opinionExperta1));
+    }
+
+    @Test
+    void testGetFechaUltimaVotacion() throws SistemaDeExcepciones {
+        assertNull(muestra.getFechaUltimaVotacion()); // Sin opiniones adicionales
+        
+        muestra.agregarOpinion(opinionExperta1);
+        assertNotNull(muestra.getFechaUltimaVotacion());
+    }
+
+    @Test
+    void testAdmiteOpinionIndirectamente() throws SistemaDeExcepciones {
+        Usuario otroUsuario = mock(Usuario.class);
+        when(otroUsuario.esNivelBasico()).thenReturn(true);
+        
+        // Probamos indirectamente a través de agregarOpinion
+        Opinion opinionOtroUsuario = new Opinion(otroUsuario, TipoDeOpinion.CHINCHE_FOLIADA);
+        assertDoesNotThrow(() -> muestra.agregarOpinion(opinionOtroUsuario));
+        
+        // Después de verificar, no admite más opiniones
+        muestra.agregarOpinion(opinionExperta1);
+        muestra.agregarOpinion(opinionExperta2);
+        
+        Usuario tercerUsuario = mock(Usuario.class);
+        when(tercerUsuario.esNivelBasico()).thenReturn(true);
+        Opinion opinionTercero = new Opinion(tercerUsuario, TipoDeOpinion.NINGUNA);
+        
+        SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
+            muestra.agregarOpinion(opinionTercero);
+        });
+        assertEquals("El usuario no puede opinar sobre esta muestra.", thrown.getMessage());
+    }
+
+    @Test
+    void testEstadoMuestraSeActualizaAlVerificar() throws SistemaDeExcepciones {
+        assertEquals(EstadoMuestra.NO_VERIFICADA, muestra.getEstado());
+        
+        muestra.agregarOpinion(opinionExperta1);
+        assertEquals(EstadoMuestra.NO_VERIFICADA, muestra.getEstado());
+        
+        muestra.agregarOpinion(opinionExperta2);
+        assertEquals(EstadoMuestra.VERIFICADA, muestra.getEstado());
+    }
     
 }
 

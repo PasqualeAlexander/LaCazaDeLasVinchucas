@@ -38,8 +38,13 @@ public class ZonaDeCobertura {
     }
 
     private boolean estaEnZona(Muestra muestra) {
-        Ubicacion ubicacionMuestra = new Ubicacion(muestra.getUbicacion());
-        return epicentro.distanciaHasta(ubicacionMuestra) <= radio;
+        try {
+            Ubicacion ubicacionMuestra = new Ubicacion(muestra.getUbicacion());
+            return epicentro.distanciaHasta(ubicacionMuestra) <= radio;
+        } catch (NumberFormatException e) {
+            // Si la ubicación es inválida, consideramos que no está en la zona
+            return false;
+        }
     }
 
     private void notificarNuevaMuestra(Muestra muestra) {

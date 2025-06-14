@@ -92,4 +92,111 @@ public class UsuarioTest {
         INivelDeUsuario nivelInvestigador = new NivelInvestigador();
         assertTrue(nivelInvestigador.puedeVerificar());
     }
+
+    @Test
+    void testCambiarContraseñaConContraseñaActualIncorrecta() {
+        SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
+            usuario.cambiarContraseña("contraseñaIncorrecta", "nuevaClave");
+        });
+        assertEquals("Contraseña actual incorrecta", thrown.getMessage());
+    }
+
+    @Test
+    void testSetContraseña() {
+        usuario.setContraseña("nuevaContraseña");
+        assertEquals("nuevaContraseña", usuario.getContraseña());
+    }
+
+    @Test
+    void testActualizarNivel() {
+        assertEquals(NivelBasico.class, usuario.getNivel().getClass());
+        
+        usuario.actualizarNivel();
+        // Debería seguir siendo básico si no cumple los requisitos
+        assertEquals(NivelBasico.class, usuario.getNivel().getClass());
+    }
+
+    @Test
+    void testSetNivel() {
+        INivelDeUsuario nivelExperto = new NivelExperto();
+        usuario.setNivel(nivelExperto);
+        
+        assertEquals(nivelExperto, usuario.getNivel());
+        assertTrue(usuario.esNivelExperto());
+        assertFalse(usuario.esNivelBasico());
+    }
+
+    @Test
+    void testEsNivelBasico() {
+        assertTrue(usuario.esNivelBasico());
+        assertFalse(usuario.esNivelExperto());
+    }
+
+    @Test
+    void testEsNivelExperto() {
+        usuario.setNivel(new NivelExperto());
+        
+        assertTrue(usuario.esNivelExperto());
+        assertFalse(usuario.esNivelBasico());
+    }
+
+    @Test
+    void testGetMuestrasEnviadas() throws SistemaDeExcepciones {
+        assertTrue(usuario.getMuestrasEnviadas().isEmpty());
+        
+        Muestra muestra1 = new Muestra("foto1.jpg", "ubicacion1", usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Muestra muestra2 = new Muestra("foto2.jpg", "ubicacion2", usuario, TipoDeOpinion.CHINCHE_FOLIADA);
+        
+        usuario.enviarMuestra(muestra1);
+        usuario.enviarMuestra(muestra2);
+        
+        assertEquals(2, usuario.getMuestrasEnviadas().size());
+        assertTrue(usuario.getMuestrasEnviadas().contains(muestra1));
+        assertTrue(usuario.getMuestrasEnviadas().contains(muestra2));
+    }
+
+    @Test
+    void testGetOpinionesEnviadas() throws SistemaDeExcepciones {
+        assertTrue(usuario.getOpinionesEnviadas().isEmpty());
+        
+        Usuario otroUsuario = new Usuario("otro", "pass", new RepositorioDeMuestras(), new RepositorioDeOpiniones());
+        Muestra muestra = new Muestra("foto.jpg", "ubicacion", otroUsuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Opinion opinion = new Opinion(usuario, TipoDeOpinion.CHINCHE_FOLIADA);
+        
+        usuario.opinar(muestra, opinion);
+        
+        assertEquals(1, usuario.getOpinionesEnviadas().size());
+        assertTrue(usuario.getOpinionesEnviadas().contains(opinion));
+    }
+
+    @Test
+    void testGetContraseña() {
+        assertEquals("1234", usuario.getContraseña());
+    }
+
+    @Test
+    void testEnviarMuestraActualizaNivel() throws SistemaDeExcepciones {
+        // Verificamos que se llama actualizarNivel al enviar muestra
+        assertEquals(NivelBasico.class, usuario.getNivel().getClass());
+        
+        Muestra muestra = new Muestra("foto.jpg", "ubicacion", usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+        usuario.enviarMuestra(muestra);
+        
+        // El nivel debería seguir siendo básico (no cumple requisitos para experto)
+        assertEquals(NivelBasico.class, usuario.getNivel().getClass());
+    }
+
+    @Test
+    void testOpinarActualizaNivel() throws SistemaDeExcepciones {
+        Usuario otroUsuario = new Usuario("otro", "pass", new RepositorioDeMuestras(), new RepositorioDeOpiniones());
+        Muestra muestra = new Muestra("foto.jpg", "ubicacion", otroUsuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Opinion opinion = new Opinion(usuario, TipoDeOpinion.CHINCHE_FOLIADA);
+        
+        assertEquals(NivelBasico.class, usuario.getNivel().getClass());
+        
+        usuario.opinar(muestra, opinion);
+        
+        // El nivel debería seguir siendo básico (no cumple requisitos para experto)
+        assertEquals(NivelBasico.class, usuario.getNivel().getClass());
+    }
 }

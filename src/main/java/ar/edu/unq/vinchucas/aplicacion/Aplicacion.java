@@ -5,10 +5,8 @@ import ar.edu.unq.vinchucas.usuario.*;
 import ar.edu.unq.vinchucas.filtros.Filtro;
 import ar.edu.unq.vinchucas.zonas.ZonaDeCobertura;
 import ar.edu.unq.vinchucas.zonas.Ubicacion;
-import ar.edu.unq.vinchucas.zonas.SistemaDeZonas;
 import ar.edu.unq.vinchucas.organizacion.Organizacion;
 import ar.edu.unq.vinchucas.organizacion.TipoOrganizacion;
-import ar.edu.unq.vinchucas.organizacion.SistemaDeOrganizaciones;
 
 import java.util.List;
 
@@ -24,17 +22,6 @@ public class Aplicacion {
         this.sistemaDeZonas = sistemaDeZonas;
         this.sistemaDeOrganizaciones = sistemaDeOrganizaciones;
     }
-
-    // Constructor sin sistema de organizaciones para compatibilidad
-    public Aplicacion(SistemaDeUsuarios sistemaDeUsuarios, IRepositorioDeMuestras repositorioDeMuestras, ISistemaDeZonas sistemaDeZonas) {
-        this(sistemaDeUsuarios, repositorioDeMuestras, sistemaDeZonas, new SistemaDeOrganizaciones());
-    }
-
-    // Constructor sin sistema de zonas para compatibilidad
-    public Aplicacion(SistemaDeUsuarios sistemaDeUsuarios, IRepositorioDeMuestras repositorioDeMuestras) {
-        this(sistemaDeUsuarios, repositorioDeMuestras, new SistemaDeZonas(), new SistemaDeOrganizaciones());
-    }
-
 
 
     // Metodo para registrar usuario.

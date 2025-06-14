@@ -2,8 +2,11 @@ package ar.edu.unq.vinchucas.muestra;
 
 import ar.edu.unq.vinchucas.aplicacion.IRepositorioDeMuestras;
 import ar.edu.unq.vinchucas.filtros.FiltroPorTipoInsecto;
+import ar.edu.unq.vinchucas.filtros.FiltroPorNivelVerificacion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -113,5 +116,41 @@ public class RepositorioDeMuestrasTest {
 		
 		assertEquals(1, resultado.size());
 		assertTrue(resultado.contains(muestra1));
+	}
+
+	@Test
+	public void testBuscarMuestrasConMultiplesFiltros() {
+		when(muestra1.getResultado()).thenReturn(TipoDeOpinion.VINCHUCA_INFESTANS);
+		when(muestra1.estaVerificada()).thenReturn(true);
+		when(muestra2.getResultado()).thenReturn(TipoDeOpinion.VINCHUCA_INFESTANS);
+		when(muestra2.estaVerificada()).thenReturn(false);
+		
+		repositorio.agregarMuestra(muestra1);
+		repositorio.agregarMuestra(muestra2);
+
+		var filtros = List.of(
+			new FiltroPorTipoInsecto(TipoDeOpinion.VINCHUCA_INFESTANS),
+			new FiltroPorNivelVerificacion(true)
+		);
+		var resultado = repositorio.buscarMuestras(filtros);
+		
+		assertEquals(1, resultado.size());
+		assertTrue(resultado.contains(muestra1));
+	}
+
+	@Test
+	public void testBuscarMuestrasConListaVacia() {
+		var resultado = repositorio.buscarMuestras(new FiltroPorTipoInsecto(TipoDeOpinion.VINCHUCA_INFESTANS));
+		
+		assertTrue(resultado.isEmpty());
+	}
+
+	@Test
+	public void testRepositorioVacio() {
+		assertEquals(0, repositorio.cantidadMuestras());
+		assertEquals(0, repositorio.cantidadMuestrasVerificadas());
+		assertTrue(repositorio.getMuestras().isEmpty());
+		assertTrue(repositorio.getMuestrasVerificadas().isEmpty());
+		assertTrue(repositorio.getMuestrasNoVerificadas().isEmpty());
 	}
 } 

@@ -10,6 +10,10 @@ import ar.edu.unq.vinchucas.usuario.Usuario;
 import ar.edu.unq.vinchucas.organizacion.Organizacion;
 import ar.edu.unq.vinchucas.organizacion.TipoOrganizacion;
 import ar.edu.unq.vinchucas.zonas.ZonaDeCobertura;
+import ar.edu.unq.vinchucas.zonas.Ubicacion;
+import ar.edu.unq.vinchucas.filtros.Filtro;
+
+import java.util.List;
 
 public class AplicacionTest {
 
@@ -111,5 +115,162 @@ public class AplicacionTest {
         aplicacion.getOrganizacionesPorTipo(TipoOrganizacion.SALUD);
 
         verify(sistemaDeOrganizaciones).getOrganizacionesPorTipo(TipoOrganizacion.SALUD);
+    }
+
+    @Test
+    public void testBuscarMuestrasConFiltro() {
+        Filtro filtroMock = mock(Filtro.class);
+        
+        aplicacion.buscarMuestras(filtroMock);
+        
+        verify(repositorioDeMuestras).buscarMuestras(filtroMock);
+    }
+
+    @Test
+    public void testBuscarMuestrasConListaDeFiltros() {
+        List<Filtro> filtrosMock = List.of(mock(Filtro.class), mock(Filtro.class));
+        
+        aplicacion.buscarMuestras(filtrosMock);
+        
+        verify(repositorioDeMuestras).buscarMuestras(filtrosMock);
+    }
+
+    @Test
+    public void testGetMuestrasVerificadas() {
+        aplicacion.getMuestrasVerificadas();
+        
+        verify(repositorioDeMuestras).getMuestrasVerificadas();
+    }
+
+    @Test
+    public void testGetMuestrasNoVerificadas() {
+        aplicacion.getMuestrasNoVerificadas();
+        
+        verify(repositorioDeMuestras).getMuestrasNoVerificadas();
+    }
+
+    @Test
+    public void testRegistrarZona() {
+        ZonaDeCobertura zonaMock = mock(ZonaDeCobertura.class);
+        
+        aplicacion.registrarZona(zonaMock);
+        
+        verify(sistemaDeZonas).agregarZona(zonaMock);
+    }
+
+    @Test
+    public void testGetZonas() {
+        aplicacion.getZonas();
+        
+        verify(sistemaDeZonas).getZonas();
+    }
+
+    @Test
+    public void testZonasQueCubrenMuestra() {
+        Muestra muestraMock = mock(Muestra.class);
+        
+        aplicacion.zonasQueCubren(muestraMock);
+        
+        verify(sistemaDeZonas).zonasQueCubren(muestraMock);
+    }
+
+    @Test
+    public void testZonasQueCubrenUbicacion() {
+        Ubicacion ubicacionMock = mock(Ubicacion.class);
+        
+        aplicacion.zonasQueCubren(ubicacionMock);
+        
+        verify(sistemaDeZonas).zonasQueCubren(ubicacionMock);
+    }
+
+    @Test
+    public void testProcesarValidacionConMuestraVerificada() {
+        Muestra muestraMock = mock(Muestra.class);
+        when(muestraMock.estaVerificada()).thenReturn(true);
+        
+        aplicacion.procesarValidacion(muestraMock);
+        
+        verify(sistemaDeZonas).procesarNuevaValidacion(muestraMock);
+    }
+
+    @Test
+    public void testProcesarValidacionConMuestraNoVerificada() {
+        Muestra muestraMock = mock(Muestra.class);
+        when(muestraMock.estaVerificada()).thenReturn(false);
+        
+        aplicacion.procesarValidacion(muestraMock);
+        
+        verify(sistemaDeZonas, never()).procesarNuevaValidacion(muestraMock);
+    }
+
+    @Test
+    public void testEliminarOrganizacion() {
+        Organizacion organizacionMock = mock(Organizacion.class);
+        
+        aplicacion.eliminarOrganizacion(organizacionMock);
+        
+        verify(sistemaDeOrganizaciones).eliminarOrganizacion(organizacionMock);
+    }
+
+    @Test
+    public void testGetOrganizaciones() {
+        aplicacion.getOrganizaciones();
+        
+        verify(sistemaDeOrganizaciones).getOrganizaciones();
+    }
+
+    @Test
+    public void testGetOrganizacionesCercanas() {
+        Ubicacion ubicacionMock = mock(Ubicacion.class);
+        double radio = 5.0;
+        
+        aplicacion.getOrganizacionesCercanas(ubicacionMock, radio);
+        
+        verify(sistemaDeOrganizaciones).getOrganizacionesCercanas(ubicacionMock, radio);
+    }
+
+    @Test
+    public void testDesuscribirOrganizacionDeZona() {
+        Organizacion organizacionMock = mock(Organizacion.class);
+        ZonaDeCobertura zonaMock = mock(ZonaDeCobertura.class);
+        
+        aplicacion.desuscribirOrganizacionDeZona(organizacionMock, zonaMock);
+        
+        verify(sistemaDeOrganizaciones).desuscribirOrganizacionDeZona(organizacionMock, zonaMock);
+    }
+
+    @Test
+    public void testCantidadOrganizaciones() {
+        aplicacion.cantidadOrganizaciones();
+        
+        verify(sistemaDeOrganizaciones).cantidadOrganizaciones();
+    }
+
+    @Test
+    public void testCantidadOrganizacionesPorTipo() {
+        aplicacion.cantidadOrganizacionesPorTipo(TipoOrganizacion.EDUCATIVA);
+        
+        verify(sistemaDeOrganizaciones).cantidadOrganizacionesPorTipo(TipoOrganizacion.EDUCATIVA);
+    }
+
+    @Test
+    public void testGetSistemaDeOrganizaciones() {
+        ISistemaDeOrganizaciones resultado = aplicacion.getSistemaDeOrganizaciones();
+        
+        assertEquals(sistemaDeOrganizaciones, resultado);
+    }
+
+    @Test
+    public void testGetSistemaDeUsuarios() {
+        SistemaDeUsuarios resultado = aplicacion.getSistemaDeUsuarios();
+        
+        assertEquals(sistemaDeUsuarios, resultado);
+    }
+
+    @Test
+    public void testGetRepositorioDeMuestras() {
+        IRepositorioDeMuestras resultado = aplicacion.getRepositorioDeMuestras();
+        
+        assertEquals(repositorioDeMuestras, resultado);
     }
 }
