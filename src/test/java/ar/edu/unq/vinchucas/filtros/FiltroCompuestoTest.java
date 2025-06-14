@@ -53,6 +53,22 @@ public class FiltroCompuestoTest {
         assertTrue(resultado.contains(muestra2));
     }
 
+    @Test
+    public void testFiltroCompuestoVacioDevuelveTodas() throws SistemaDeExcepciones {
+        Usuario usuario = mock(Usuario.class);
+        Muestra muestra1 = new Muestra("foto1.jpg", "loc1", usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Muestra muestra2 = new Muestra("foto2.jpg", "loc2", usuario, TipoDeOpinion.CHINCHE_FOLIADA);
+        List<Muestra> muestras = List.of(muestra1, muestra2);
+
+        FiltroCompuesto filtroVacio = new FiltroCompuesto(OperadorLogico.AND);
+        // No agregamos ningún filtro
+
+        List<Muestra> resultado = filtroVacio.filtrar(muestras);
+        assertEquals(2, resultado.size());
+        assertTrue(resultado.contains(muestra1));
+        assertTrue(resultado.contains(muestra2));
+    }
+
     // Utilidad para setear la fecha de creación usando reflection
     private void setFechaCreacion(Muestra muestra, LocalDate fecha) {
         try {

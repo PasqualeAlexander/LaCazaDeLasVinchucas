@@ -19,7 +19,7 @@ public class RepositorioDeMuestras implements IRepositorioDeMuestras {
 
 	@Override
 	public List<Muestra> getMuestras() {
-		return new ArrayList<>(muestras);
+		return muestras;
 	}
 
 	// === FUNCIONALIDADES DE FILTRADO ===

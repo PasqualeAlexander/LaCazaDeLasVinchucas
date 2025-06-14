@@ -47,15 +47,7 @@ public class RepositorioDeMuestrasTest {
 		assertTrue(repositorio.getMuestras().contains(muestra2));
 	}
 
-	@Test
-	public void testGetMuestrasDevuelveCopiaSinModificarOriginal() {
-		repositorio.agregarMuestra(muestra1);
-		var muestras = repositorio.getMuestras();
-		muestras.clear(); // Modificamos la copia
-		
-		// El repositorio original no debe verse afectado
-		assertEquals(1, repositorio.getMuestras().size());
-	}
+
 
 	@Test
 	public void testGetMuestrasVerificadas() {

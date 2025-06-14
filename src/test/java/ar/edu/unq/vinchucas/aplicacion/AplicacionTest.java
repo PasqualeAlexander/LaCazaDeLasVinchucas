@@ -273,4 +273,11 @@ public class AplicacionTest {
         
         assertEquals(repositorioDeMuestras, resultado);
     }
+
+    @Test
+    public void testGetSistemaDeZonas() {
+        ISistemaDeZonas resultado = aplicacion.getSistemaDeZonas();
+        
+        assertEquals(sistemaDeZonas, resultado);
+    }
 }

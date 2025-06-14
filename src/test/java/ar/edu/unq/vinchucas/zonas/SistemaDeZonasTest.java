@@ -124,4 +124,40 @@ public class SistemaDeZonasTest {
         // Ahora sí debe procesar
         verify(zona1).getOrganizacionesSuscriptas();
     }
+
+    @Test
+    public void testProcesarNuevaValidacionConOrganizacionesSuscritas() {
+        when(muestra.estaVerificada()).thenReturn(true);
+        when(zona1.getOrganizacionesSuscriptas()).thenReturn(java.util.List.of(organizacion));
+        sistemaDeZonas.agregarZona(zona1);
+        
+        sistemaDeZonas.procesarNuevaValidacion(muestra);
+        
+        // Verificamos que se notifica a la organización
+        verify(organizacion).procesarNuevaValidacion(muestra, zona1);
+    }
+
+    @Test
+    public void testZonasQueCubrenMuestraConUbicacionInvalida() {
+        Muestra muestraInvalida = mock(Muestra.class);
+        when(muestraInvalida.getUbicacion()).thenReturn("ubicacion-invalida");
+        
+        sistemaDeZonas.agregarZona(zona1);
+        
+        var zonasCubren = sistemaDeZonas.zonasQueCubren(muestraInvalida);
+        
+        // No debe cubrir ninguna zona si la ubicación es inválida
+        assertEquals(0, zonasCubren.size());
+    }
+
+    @Test
+    public void testGetZonasDevuelveCopia() {
+        sistemaDeZonas.agregarZona(zona1);
+        
+        var zonas = sistemaDeZonas.getZonas();
+        zonas.clear(); // Modificamos la copia
+        
+        // El sistema original no debe verse afectado
+        assertEquals(1, sistemaDeZonas.getZonas().size());
+    }
 } 

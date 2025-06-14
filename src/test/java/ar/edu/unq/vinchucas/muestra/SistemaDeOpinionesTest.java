@@ -128,4 +128,53 @@ public class SistemaDeOpinionesTest {
 
         assertFalse(sistema.admiteOpinionDeUsuario(usuarioMock));
     }
+
+    @Test
+    public void testGetFechaUltimaOpinionRetornaNullSiNoHayOpiniones() {
+        SistemaDeOpiniones sistemaVacio = new SistemaDeOpiniones(TipoDeOpinion.VINCHUCA_INFESTANS);
+        sistemaVacio.getOpiniones().clear(); // Limpiamos las opiniones para simular sistema vacío
+        
+        assertNull(sistemaVacio.getFechaUltimaOpinion());
+    }
+
+    @Test
+    public void testGetResultadoConEmpate() throws SistemaDeExcepciones {
+        // Creamos un sistema con voto inicial
+        SistemaDeOpiniones sistemaEmpate = new SistemaDeOpiniones(TipoDeOpinion.VINCHUCA_INFESTANS);
+        
+        // Agregamos un voto para VINCHUCA_SORDIDA para empatar con el voto inicial
+        Opinion opinion1 = mock(Opinion.class);
+        when(opinion1.getUsuario()).thenReturn(usuarioMock);
+        when(opinion1.getTipoDeOpinion()).thenReturn(TipoDeOpinion.VINCHUCA_SORDIDA);
+        when(opinion1.eraExpertoAlOpinar()).thenReturn(false);
+        
+        sistemaEmpate.agregarOpinion(opinion1);
+        
+        // Ahora ambos tipos tienen 1 voto cada uno, debería ser empate
+        assertEquals(TipoDeOpinion.NO_DEFINIDO, sistemaEmpate.getResultado());
+    }
+
+    @Test
+    public void testAdmiteOpinionDeUsuarioRetornaFalseSiEstaVerificada() throws SistemaDeExcepciones {
+        // Agregamos dos expertos que coinciden para verificar
+        Opinion experto1 = mock(Opinion.class);
+        when(experto1.getUsuario()).thenReturn(expertoMock);
+        when(experto1.getTipoDeOpinion()).thenReturn(TipoDeOpinion.IMAGEN_POCO_CLARA);
+        when(experto1.eraExpertoAlOpinar()).thenReturn(true);
+
+        Usuario experto2 = mock(Usuario.class);
+        when(experto2.getNombreUsuario()).thenReturn("otroExperto");
+        when(experto2.esNivelExperto()).thenReturn(true);
+
+        Opinion opinion2 = mock(Opinion.class);
+        when(opinion2.getUsuario()).thenReturn(experto2);
+        when(opinion2.getTipoDeOpinion()).thenReturn(TipoDeOpinion.IMAGEN_POCO_CLARA);
+        when(opinion2.eraExpertoAlOpinar()).thenReturn(true);
+
+        sistema.agregarOpinion(experto1);
+        sistema.agregarOpinion(opinion2);
+
+        // Ahora está verificada, no debe admitir más opiniones
+        assertFalse(sistema.admiteOpinionDeUsuario(usuarioMock));
+    }
 }

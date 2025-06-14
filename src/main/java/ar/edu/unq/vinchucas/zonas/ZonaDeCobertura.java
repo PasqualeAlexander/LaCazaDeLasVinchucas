@@ -60,7 +60,6 @@ public class ZonaDeCobertura {
                 .toList();
     }
 
-    // Getters necesarios
     public String getNombre() {
         return nombre;
     }
@@ -74,10 +73,10 @@ public class ZonaDeCobertura {
     }
 
     public List<Organizacion> getOrganizacionesSuscriptas() {
-        return new ArrayList<>(organizacionesSuscriptas);
+        return organizacionesSuscriptas;
     }
 
     public List<Muestra> getMuestrasReportadas() {
-        return new ArrayList<>(muestrasReportadas);
+        return muestrasReportadas;
     }
 } 

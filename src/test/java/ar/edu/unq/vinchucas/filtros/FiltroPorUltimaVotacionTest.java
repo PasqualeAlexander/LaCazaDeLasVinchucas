@@ -43,6 +43,21 @@ public class FiltroPorUltimaVotacionTest {
         assertFalse(resultado.contains(muestra1));
     }
 
+    @Test
+    public void testExcluyeMuestrasSinOpiniones() throws SistemaDeExcepciones {
+        Usuario usuario = mock(Usuario.class);
+        Muestra muestraSinOpiniones = new Muestra("foto1.jpg", "loc1", usuario, TipoDeOpinion.VINCHUCA_INFESTANS);
+        // No agregamos ninguna opinión
+
+        List<Muestra> muestras = List.of(muestraSinOpiniones);
+        LocalDate desde = LocalDate.now().minusDays(3);
+        LocalDate hasta = LocalDate.now();
+        Filtro filtro = new FiltroPorUltimaVotacion(desde, hasta);
+        List<Muestra> resultado = filtro.filtrar(muestras);
+
+        assertEquals(0, resultado.size());
+    }
+
     // Utilidad para setear la fecha de la opinión usando reflection
     private void setFechaOpinion(Opinion opinion, LocalDate fecha) {
         try {

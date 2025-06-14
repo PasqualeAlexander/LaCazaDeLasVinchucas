@@ -32,4 +32,10 @@ public class NivelInvestigadorTest {
         NivelInvestigador nivel = new NivelInvestigador();
         assertEquals("Nivel Investigador", nivel.getNombreNivel());
     }
+
+    @Test
+    public void testEsNivelExpertoDebeSerTrue() {
+        NivelInvestigador nivel = new NivelInvestigador();
+        assertTrue(nivel.esNivelExperto(), "NivelInvestigador debe ser nivel experto");
+    }
 }

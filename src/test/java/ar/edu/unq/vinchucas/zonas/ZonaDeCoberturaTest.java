@@ -137,27 +137,6 @@ public class ZonaDeCoberturaTest {
         assertTrue(solapantes.isEmpty());
     }
 
-    @Test
-    public void testGetOrganizacionesSuscriptasDevuelveCopia() {
-        zona.suscribirOrganizacion(organizacion1);
-        
-        List<Organizacion> organizaciones = zona.getOrganizacionesSuscriptas();
-        organizaciones.clear(); // Modificamos la copia
-        
-        // La zona original no debe verse afectada
-        assertEquals(1, zona.getOrganizacionesSuscriptas().size());
-    }
-
-    @Test
-    public void testGetMuestrasReportadasDevuelveCopia() {
-        zona.registrarMuestra(muestra);
-        
-        List<Muestra> muestras = zona.getMuestrasReportadas();
-        muestras.clear(); // Modificamos la copia
-        
-        // La zona original no debe verse afectada
-        assertEquals(1, zona.getMuestrasReportadas().size());
-    }
 
     @Test
     public void testRegistrarMuestraConUbicacionInvalida() {
