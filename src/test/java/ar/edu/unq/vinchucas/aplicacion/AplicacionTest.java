@@ -11,14 +11,16 @@ import ar.edu.unq.vinchucas.usuario.Usuario;
 public class AplicacionTest {
 
     private SistemaDeUsuarios sistemaDeUsuarios;
-    private SistemaDeMuestras sistemaDeMuestras;
+    private IRepositorioDeMuestras repositorioDeMuestras;
+    private ISistemaDeZonas sistemaDeZonas;
     private Aplicacion aplicacion;
 
     @BeforeEach
     public void setUp() {
         sistemaDeUsuarios = mock(SistemaDeUsuarios.class);
-        sistemaDeMuestras = mock(SistemaDeMuestras.class);
-        aplicacion = new Aplicacion(sistemaDeUsuarios, sistemaDeMuestras);
+        repositorioDeMuestras = mock(IRepositorioDeMuestras.class);
+        sistemaDeZonas = mock(ISistemaDeZonas.class);
+        aplicacion = new Aplicacion(sistemaDeUsuarios, repositorioDeMuestras, sistemaDeZonas);
     }
 
     @Test
@@ -76,6 +78,7 @@ public class AplicacionTest {
         aplicacion.registrarMuestra(usuarioMock, muestraMock);
 
         verify(usuarioMock).enviarMuestra(muestraMock);
-        verify(sistemaDeMuestras).registrarMuestra(muestraMock);
+        verify(repositorioDeMuestras).agregarMuestra(muestraMock);
+        verify(sistemaDeZonas).procesarNuevaMuestra(muestraMock);
     }
 }

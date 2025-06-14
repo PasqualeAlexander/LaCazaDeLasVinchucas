@@ -54,4 +54,25 @@ public class ZonaDeCobertura {
                 .filter(zona -> epicentro.distanciaHasta(zona.epicentro) <= (radio + zona.radio))
                 .toList();
     }
+
+    // Getters necesarios
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Ubicacion getEpicentro() {
+        return epicentro;
+    }
+
+    public double getRadio() {
+        return radio;
+    }
+
+    public List<Organizacion> getOrganizacionesSuscriptas() {
+        return new ArrayList<>(organizacionesSuscriptas);
+    }
+
+    public List<Muestra> getMuestrasReportadas() {
+        return new ArrayList<>(muestrasReportadas);
+    }
 } 
