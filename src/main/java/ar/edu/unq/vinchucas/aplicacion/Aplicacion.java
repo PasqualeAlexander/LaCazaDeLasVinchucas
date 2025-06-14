@@ -6,6 +6,9 @@ import ar.edu.unq.vinchucas.filtros.Filtro;
 import ar.edu.unq.vinchucas.zonas.ZonaDeCobertura;
 import ar.edu.unq.vinchucas.zonas.Ubicacion;
 import ar.edu.unq.vinchucas.zonas.SistemaDeZonas;
+import ar.edu.unq.vinchucas.organizacion.Organizacion;
+import ar.edu.unq.vinchucas.organizacion.TipoOrganizacion;
+import ar.edu.unq.vinchucas.organizacion.SistemaDeOrganizaciones;
 
 import java.util.List;
 
@@ -13,16 +16,23 @@ public class Aplicacion {
     private SistemaDeUsuarios sistemaDeUsuarios;
     private IRepositorioDeMuestras repositorioDeMuestras;
     private ISistemaDeZonas sistemaDeZonas;
+    private ISistemaDeOrganizaciones sistemaDeOrganizaciones;
 
-    public Aplicacion(SistemaDeUsuarios sistemaDeUsuarios, IRepositorioDeMuestras repositorioDeMuestras, ISistemaDeZonas sistemaDeZonas) {
+    public Aplicacion(SistemaDeUsuarios sistemaDeUsuarios, IRepositorioDeMuestras repositorioDeMuestras, ISistemaDeZonas sistemaDeZonas, ISistemaDeOrganizaciones sistemaDeOrganizaciones) {
         this.sistemaDeUsuarios = sistemaDeUsuarios;
         this.repositorioDeMuestras = repositorioDeMuestras;
         this.sistemaDeZonas = sistemaDeZonas;
+        this.sistemaDeOrganizaciones = sistemaDeOrganizaciones;
+    }
+
+    // Constructor sin sistema de organizaciones para compatibilidad
+    public Aplicacion(SistemaDeUsuarios sistemaDeUsuarios, IRepositorioDeMuestras repositorioDeMuestras, ISistemaDeZonas sistemaDeZonas) {
+        this(sistemaDeUsuarios, repositorioDeMuestras, sistemaDeZonas, new SistemaDeOrganizaciones());
     }
 
     // Constructor sin sistema de zonas para compatibilidad
     public Aplicacion(SistemaDeUsuarios sistemaDeUsuarios, IRepositorioDeMuestras repositorioDeMuestras) {
-        this(sistemaDeUsuarios, repositorioDeMuestras, new SistemaDeZonas());
+        this(sistemaDeUsuarios, repositorioDeMuestras, new SistemaDeZonas(), new SistemaDeOrganizaciones());
     }
 
 
@@ -106,6 +116,48 @@ public class Aplicacion {
 
     public ISistemaDeZonas getSistemaDeZonas() {
         return sistemaDeZonas;
+    }
+
+    // === FUNCIONALIDAD DE ORGANIZACIONES ===
+    
+    public void registrarOrganizacion(Organizacion organizacion) {
+        sistemaDeOrganizaciones.registrarOrganizacion(organizacion);
+    }
+
+    public void eliminarOrganizacion(Organizacion organizacion) {
+        sistemaDeOrganizaciones.eliminarOrganizacion(organizacion);
+    }
+
+    public List<Organizacion> getOrganizaciones() {
+        return sistemaDeOrganizaciones.getOrganizaciones();
+    }
+
+    public List<Organizacion> getOrganizacionesPorTipo(TipoOrganizacion tipo) {
+        return sistemaDeOrganizaciones.getOrganizacionesPorTipo(tipo);
+    }
+
+    public List<Organizacion> getOrganizacionesCercanas(Ubicacion ubicacion, double radio) {
+        return sistemaDeOrganizaciones.getOrganizacionesCercanas(ubicacion, radio);
+    }
+
+    public void suscribirOrganizacionAZona(Organizacion organizacion, ZonaDeCobertura zona) {
+        sistemaDeOrganizaciones.suscribirOrganizacionAZona(organizacion, zona);
+    }
+
+    public void desuscribirOrganizacionDeZona(Organizacion organizacion, ZonaDeCobertura zona) {
+        sistemaDeOrganizaciones.desuscribirOrganizacionDeZona(organizacion, zona);
+    }
+
+    public int cantidadOrganizaciones() {
+        return sistemaDeOrganizaciones.cantidadOrganizaciones();
+    }
+
+    public int cantidadOrganizacionesPorTipo(TipoOrganizacion tipo) {
+        return sistemaDeOrganizaciones.cantidadOrganizacionesPorTipo(tipo);
+    }
+
+    public ISistemaDeOrganizaciones getSistemaDeOrganizaciones() {
+        return sistemaDeOrganizaciones;
     }
 }
 

@@ -3,6 +3,7 @@ package ar.edu.unq.vinchucas.organizacion;
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.zonas.ZonaDeCobertura;
 import ar.edu.unq.vinchucas.zonas.Ubicacion;
+import ar.edu.unq.vinchucas.zonas.FuncionalidadExterna;
 
 public interface Organizacion {
     /**
@@ -32,12 +33,11 @@ public interface Organizacion {
     
     /**
      * Configura la funcionalidad externa para nuevas muestras
-    
-    void setFuncionalidadNuevaMuestra(FuncionalidadExterna funcionalidad);
      */
+    void setFuncionalidadNuevaMuestra(FuncionalidadExterna funcionalidad);
+    
     /**
      * Configura la funcionalidad externa para validaciones
-    
-    void setFuncionalidadValidacion(FuncionalidadExterna funcionalidad);
      */
+    void setFuncionalidadValidacion(FuncionalidadExterna funcionalidad);
 } 

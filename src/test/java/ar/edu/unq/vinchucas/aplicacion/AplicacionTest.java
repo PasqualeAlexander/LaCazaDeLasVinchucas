@@ -7,12 +7,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.usuario.Usuario;
+import ar.edu.unq.vinchucas.organizacion.Organizacion;
+import ar.edu.unq.vinchucas.organizacion.TipoOrganizacion;
+import ar.edu.unq.vinchucas.zonas.ZonaDeCobertura;
 
 public class AplicacionTest {
 
     private SistemaDeUsuarios sistemaDeUsuarios;
     private IRepositorioDeMuestras repositorioDeMuestras;
     private ISistemaDeZonas sistemaDeZonas;
+    private ISistemaDeOrganizaciones sistemaDeOrganizaciones;
     private Aplicacion aplicacion;
 
     @BeforeEach
@@ -20,7 +24,8 @@ public class AplicacionTest {
         sistemaDeUsuarios = mock(SistemaDeUsuarios.class);
         repositorioDeMuestras = mock(IRepositorioDeMuestras.class);
         sistemaDeZonas = mock(ISistemaDeZonas.class);
-        aplicacion = new Aplicacion(sistemaDeUsuarios, repositorioDeMuestras, sistemaDeZonas);
+        sistemaDeOrganizaciones = mock(ISistemaDeOrganizaciones.class);
+        aplicacion = new Aplicacion(sistemaDeUsuarios, repositorioDeMuestras, sistemaDeZonas, sistemaDeOrganizaciones);
     }
 
     @Test
@@ -80,5 +85,31 @@ public class AplicacionTest {
         verify(usuarioMock).enviarMuestra(muestraMock);
         verify(repositorioDeMuestras).agregarMuestra(muestraMock);
         verify(sistemaDeZonas).procesarNuevaMuestra(muestraMock);
+    }
+
+    @Test
+    public void testRegistrarOrganizacion() {
+        Organizacion organizacionMock = mock(Organizacion.class);
+
+        aplicacion.registrarOrganizacion(organizacionMock);
+
+        verify(sistemaDeOrganizaciones).registrarOrganizacion(organizacionMock);
+    }
+
+    @Test
+    public void testSuscribirOrganizacionAZona() {
+        Organizacion organizacionMock = mock(Organizacion.class);
+        ZonaDeCobertura zonaMock = mock(ZonaDeCobertura.class);
+
+        aplicacion.suscribirOrganizacionAZona(organizacionMock, zonaMock);
+
+        verify(sistemaDeOrganizaciones).suscribirOrganizacionAZona(organizacionMock, zonaMock);
+    }
+
+    @Test
+    public void testGetOrganizacionesPorTipo() {
+        aplicacion.getOrganizacionesPorTipo(TipoOrganizacion.SALUD);
+
+        verify(sistemaDeOrganizaciones).getOrganizacionesPorTipo(TipoOrganizacion.SALUD);
     }
 }
