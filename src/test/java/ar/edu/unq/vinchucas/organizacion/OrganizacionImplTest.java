@@ -90,18 +90,6 @@ public class OrganizacionImplTest {
     }
 
     @Test
-    public void testEqualsYHashCode() {
-        OrganizacionImpl organizacion2 = new OrganizacionImpl("Hospital Italiano", ubicacion, TipoOrganizacion.SALUD, 150);
-        OrganizacionImpl organizacion3 = new OrganizacionImpl("Hospital Italiano", new Ubicacion(-31.4201, -64.1888), TipoOrganizacion.SALUD, 150);
-        
-        assertEquals(organizacion, organizacion2);
-        assertEquals(organizacion.hashCode(), organizacion2.hashCode());
-        
-        assertNotEquals(organizacion, organizacion3);
-        assertNotEquals(organizacion.hashCode(), organizacion3.hashCode());
-    }
-
-    @Test
     public void testToString() {
         String resultado = organizacion.toString();
         

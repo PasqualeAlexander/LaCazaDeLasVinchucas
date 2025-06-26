@@ -71,19 +71,6 @@ public class OrganizacionImpl implements Organizacion {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        OrganizacionImpl that = (OrganizacionImpl) obj;
-        return nombre.equals(that.nombre) && ubicacion.equals(that.ubicacion);
-    }
-
-    @Override
-    public int hashCode() {
-        return nombre.hashCode() + ubicacion.hashCode();
-    }
-
-    @Override
     public String toString() {
         return "Organización{" +
                 "nombre='" + nombre + '\'' +
