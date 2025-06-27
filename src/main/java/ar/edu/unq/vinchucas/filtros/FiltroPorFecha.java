@@ -2,9 +2,12 @@ package ar.edu.unq.vinchucas.filtros;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import java.time.LocalDate;
-import java.util.List;
 
-public class FiltroPorFecha implements Filtro {
+/**
+ * Filtro que permite buscar muestras por rango de fechas de creación.
+ * Implementa el patrón Template Method heredando de FiltroAbstracto.
+ */
+public class FiltroPorFecha extends FiltroAbstracto {
     private final LocalDate fechaInicio;
     private final LocalDate fechaFin;
 
@@ -14,13 +17,7 @@ public class FiltroPorFecha implements Filtro {
     }
 
     @Override
-    public List<Muestra> filtrar(List<Muestra> muestras) {
-        return muestras.stream()
-                .filter(this::estaEnRangoFecha)
-                .toList();
-    }
-
-    private boolean estaEnRangoFecha(Muestra muestra) {
+    protected boolean cumpleCriterio(Muestra muestra) {
         LocalDate fechaMuestra = muestra.getFechaCreacion();
         return !fechaMuestra.isBefore(fechaInicio) && !fechaMuestra.isAfter(fechaFin);
     }

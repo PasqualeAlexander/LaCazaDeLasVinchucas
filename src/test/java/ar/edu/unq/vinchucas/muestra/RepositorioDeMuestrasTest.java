@@ -1,6 +1,7 @@
 package ar.edu.unq.vinchucas.muestra;
 
 import ar.edu.unq.vinchucas.aplicacion.IRepositorioDeMuestras;
+import ar.edu.unq.vinchucas.filtros.Filtro;
 import ar.edu.unq.vinchucas.filtros.FiltroPorTipoInsecto;
 import ar.edu.unq.vinchucas.filtros.FiltroPorNivelVerificacion;
 import org.junit.jupiter.api.BeforeEach;
@@ -120,7 +121,7 @@ public class RepositorioDeMuestrasTest {
 		repositorio.agregarMuestra(muestra1);
 		repositorio.agregarMuestra(muestra2);
 
-		var filtros = List.of(
+		List<Filtro> filtros = List.of(
 			new FiltroPorTipoInsecto(TipoDeOpinion.VINCHUCA_INFESTANS),
 			new FiltroPorNivelVerificacion(true)
 		);

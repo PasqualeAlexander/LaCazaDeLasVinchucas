@@ -1,9 +1,12 @@
 package ar.edu.unq.vinchucas.filtros;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
-import java.util.List;
 
-public class FiltroPorNivelVerificacion implements Filtro { // TOFO: Fix
+/**
+ * Filtro que permite buscar muestras por su nivel de verificación.
+ * Implementa el patrón Template Method heredando de FiltroAbstracto.
+ */
+public class FiltroPorNivelVerificacion extends FiltroAbstracto {
     private final boolean verificada;
 
     public FiltroPorNivelVerificacion(boolean verificada) {
@@ -11,9 +14,7 @@ public class FiltroPorNivelVerificacion implements Filtro { // TOFO: Fix
     }
 
     @Override
-    public List<Muestra> filtrar(List<Muestra> muestras) {
-        return muestras.stream()
-                .filter(muestra -> muestra.estaVerificada() == verificada)
-                .toList();
+    protected boolean cumpleCriterio(Muestra muestra) {
+        return muestra.estaVerificada() == verificada;
     }
 } 

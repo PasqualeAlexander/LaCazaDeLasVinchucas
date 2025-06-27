@@ -2,9 +2,12 @@ package ar.edu.unq.vinchucas.filtros;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.TipoDeOpinion;
-import java.util.List;
 
-public class FiltroPorTipoInsecto implements Filtro {
+/**
+ * Filtro que permite buscar muestras por el tipo de insecto detectado.
+ * Implementa el patrón Template Method heredando de FiltroAbstracto.
+ */
+public class FiltroPorTipoInsecto extends FiltroAbstracto {
     private final TipoDeOpinion tipoInsecto;
 
     public FiltroPorTipoInsecto(TipoDeOpinion tipoInsecto) {
@@ -12,9 +15,7 @@ public class FiltroPorTipoInsecto implements Filtro {
     }
 
     @Override
-    public List<Muestra> filtrar(List<Muestra> muestras) {
-        return muestras.stream()
-                .filter(muestra -> muestra.getResultado().equals(tipoInsecto))
-                .toList();
+    protected boolean cumpleCriterio(Muestra muestra) {
+        return muestra.getResultado().equals(tipoInsecto);
     }
 } 

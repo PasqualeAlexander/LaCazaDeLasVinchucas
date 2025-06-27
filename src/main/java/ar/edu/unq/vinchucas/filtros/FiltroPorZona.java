@@ -4,9 +4,11 @@ import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.zonas.ZonaDeCobertura;
 import ar.edu.unq.vinchucas.zonas.Ubicacion;
 
-import java.util.List;
-
-public class FiltroPorZona implements Filtro {
+/**
+ * Filtro que permite buscar muestras que se encuentran dentro de una zona de cobertura.
+ * Implementa el patrón Template Method heredando de FiltroAbstracto.
+ */
+public class FiltroPorZona extends FiltroAbstracto {
     private final ZonaDeCobertura zona;
 
     public FiltroPorZona(ZonaDeCobertura zona) {
@@ -14,13 +16,7 @@ public class FiltroPorZona implements Filtro {
     }
 
     @Override
-    public List<Muestra> filtrar(List<Muestra> muestras) {
-        return muestras.stream()
-                .filter(this::estaEnZona)
-                .toList();
-    }
-
-    private boolean estaEnZona(Muestra muestra) {
+    protected boolean cumpleCriterio(Muestra muestra) {
         try {
             Ubicacion ubicacionMuestra = new Ubicacion(muestra.getUbicacion());
             double distancia = zona.getEpicentro().distanciaHasta(ubicacionMuestra);
