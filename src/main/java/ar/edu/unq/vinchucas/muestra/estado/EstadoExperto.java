@@ -55,4 +55,9 @@ public class EstadoExperto implements IEstadoMuestra {
     public TipoDeOpinion getResultado() {
         return resultado;
     }
+
+	@Override
+	public boolean esVerificada() {
+		return false;
+	}
 } 

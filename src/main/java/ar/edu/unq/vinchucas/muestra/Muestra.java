@@ -8,6 +8,7 @@ import ar.edu.unq.vinchucas.muestra.estado.EstadoAbierto;
 import ar.edu.unq.vinchucas.muestra.estado.EstadoVerificada;
 import ar.edu.unq.vinchucas.muestra.estado.IEstadoMuestra;
 import ar.edu.unq.vinchucas.usuario.Usuario;
+import java.util.ArrayList;
 
 public class Muestra {
     private final String foto;
@@ -16,7 +17,8 @@ public class Muestra {
     private final Usuario usuario;
     private final SistemaDeOpiniones sistemaDeOpiniones;
     private IEstadoMuestra estado;
-
+    private final List<ObservadorMuestra> observadores;
+    
     public Muestra(String foto, String ubicacion, Usuario usuario, TipoDeOpinion votoInicial) throws SistemaDeExcepciones {
         if (foto == null || foto.isBlank()) {
             throw new SistemaDeExcepciones("La foto no puede estar vacía");
@@ -36,7 +38,7 @@ public class Muestra {
         this.usuario = usuario;
         this.fechaCreacion = LocalDate.now();
         this.sistemaDeOpiniones = new SistemaDeOpiniones();
-        
+        this.observadores = new ArrayList<>();
         // Crear la opinión inicial del usuario que sube la muestra
         Opinion opinionInicial = new Opinion(usuario, votoInicial);
         this.sistemaDeOpiniones.agregarOpinionInicial(opinionInicial);
@@ -93,7 +95,7 @@ public class Muestra {
     }
 
     public boolean estaVerificada() {
-        return estado instanceof EstadoVerificada;
+        return estado.esVerificada();
     }
 
     private boolean admiteOpinionDeUsuario(Usuario usuario) {
@@ -105,6 +107,26 @@ public class Muestra {
 
     // Método para cambiar estado (solo accesible desde los estados)
     public void setEstado(IEstadoMuestra nuevoEstado) {
+        boolean eraVerificadaAntes = this.estaVerificada();
         this.estado = nuevoEstado;
+        
+        // Si cambió a verificada, notificar a los observadores, sino no
+        if (!eraVerificadaAntes && this.estaVerificada()) {
+            notificarMuestraVerificada();
+        }
+    }
+    
+    public void agregarObservador(ObservadorMuestra observador) {
+        observadores.add(observador);
+    }
+
+    public void removerObservador(ObservadorMuestra observador) {
+        observadores.remove(observador);
+    }
+
+    private void notificarMuestraVerificada() {
+        for (ObservadorMuestra observador : observadores) {
+            observador.muestraVerificada(this);
+        }
     }
 }

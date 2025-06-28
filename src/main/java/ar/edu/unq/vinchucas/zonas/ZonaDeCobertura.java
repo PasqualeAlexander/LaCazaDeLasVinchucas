@@ -1,11 +1,12 @@
 package ar.edu.unq.vinchucas.zonas;
 
 import ar.edu.unq.vinchucas.muestra.Muestra;
+import ar.edu.unq.vinchucas.muestra.ObservadorMuestra;
 import ar.edu.unq.vinchucas.organizacion.Organizacion;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZonaDeCobertura {
+public class ZonaDeCobertura implements ObservadorMuestra {
     private final String nombre;
     private final Ubicacion epicentro;
     private final double radio;
@@ -33,6 +34,8 @@ public class ZonaDeCobertura {
     public void registrarMuestra(Muestra muestra) {
         if (estaEnZona(muestra)) {
             muestrasReportadas.add(muestra);
+            // Suscribirse como observador de la muestra
+            muestra.agregarObservador(this);
             notificarNuevaMuestra(muestra);
         }
     }
@@ -78,5 +81,19 @@ public class ZonaDeCobertura {
 
     public List<Muestra> getMuestrasReportadas() {
         return muestrasReportadas;
+    }
+    
+    @Override
+    public void muestraVerificada(Muestra muestra) {
+        // Solo procesar si la muestra está en esta zona
+        if (estaEnZona(muestra)) {
+            notificarMuestraVerificada(muestra);
+        }
+    }
+    
+    private void notificarMuestraVerificada(Muestra muestra) {
+        for (Organizacion organizacion : organizacionesSuscriptas) {
+            funcionalidadExterna.muestraVerificada(organizacion, this, muestra);
+        }
     }
 } 

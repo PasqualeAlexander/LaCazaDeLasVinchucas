@@ -72,4 +72,9 @@ public class EstadoAbierto implements IEstadoMuestra {
 
         this.resultado = empate ? TipoDeOpinion.NO_DEFINIDO : nuevoResultado;
     }
+
+	@Override
+	public boolean esVerificada() {
+		return false;
+	}
 } 

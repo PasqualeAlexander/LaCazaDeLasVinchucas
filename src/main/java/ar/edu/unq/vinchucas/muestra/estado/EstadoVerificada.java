@@ -27,4 +27,9 @@ public class EstadoVerificada implements IEstadoMuestra {
     public TipoDeOpinion getResultado() {
         return resultado; // Resultado fijo
     }
+    
+    @Override
+    public boolean esVerificada(){
+    	return true;
+    }
 } 

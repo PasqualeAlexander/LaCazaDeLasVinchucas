@@ -10,4 +10,5 @@ public interface IEstadoMuestra {
     void agregarOpinion(Muestra muestra, Opinion opinion) throws SistemaDeExcepciones;
     boolean puedeOpinarUsuario(Usuario usuario, Muestra muestra);
     TipoDeOpinion getResultado();
+	boolean esVerificada();
 } 
