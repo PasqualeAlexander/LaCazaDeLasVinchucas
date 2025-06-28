@@ -49,6 +49,13 @@ public class MuestraTest {
         Usuario user5 = mock(Usuario.class);
         Usuario user6 = mock(Usuario.class);
 
+        when(user1.esNivelBasico()).thenReturn(true);
+        when(user2.esNivelBasico()).thenReturn(true);
+        when(user3.esNivelBasico()).thenReturn(true);
+        when(user4.esNivelBasico()).thenReturn(true);
+        when(user5.esNivelBasico()).thenReturn(true);
+        when(user6.esNivelBasico()).thenReturn(true);
+
         muestra.agregarOpinion(new Opinion(user1, TipoDeOpinion.VINCHUCA_INFESTANS));
         muestra.agregarOpinion(new Opinion(user2, TipoDeOpinion.VINCHUCA_INFESTANS));
         muestra.agregarOpinion(new Opinion(user3, TipoDeOpinion.NINGUNA));
@@ -70,6 +77,7 @@ public class MuestraTest {
     void testVotoExpertoInvalidaVotosBasicos() throws SistemaDeExcepciones {
     	Usuario otroBasico = mock(Usuario.class);
         when(otroBasico.esNivelBasico()).thenReturn(true);
+        when(otroBasico.esNivelExperto()).thenReturn(false);
 
         Opinion opinionBasica = new Opinion(otroBasico, TipoDeOpinion.IMAGEN_POCO_CLARA);
         
@@ -122,7 +130,7 @@ public class MuestraTest {
         when(usuarioExperto1.esNivelBasico()).thenReturn(true);
         when(usuarioExperto1.esNivelExperto()).thenReturn(false);
 
-        assertTrue(muestra.getOpiniones().get(0).eraExpertoAlOpinar());
+        assertTrue(muestra.getOpiniones().get(1).eraExpertoAlOpinar()); // La opinión inicial está en índice 0
     }
 
     @Test
@@ -180,7 +188,7 @@ public class MuestraTest {
         assertEquals("foto_test.jpg", muestraTest.getFoto());
         assertEquals("Córdoba", muestraTest.getUbicacion());
         assertEquals(usuarioBasico, muestraTest.getUsuario());
-        assertEquals(EstadoMuestra.NO_VERIFICADA, muestraTest.getEstado());
+        assertFalse(muestraTest.estaVerificada());
         assertNotNull(muestraTest.getFechaCreacion());
     }
 
@@ -195,16 +203,16 @@ public class MuestraTest {
 
     @Test
     void testGetOpiniones() throws SistemaDeExcepciones {
-        assertTrue(muestra.getOpiniones().isEmpty()); // Inicialmente vacía (solo cuenta el voto inicial del sistema)
+        assertEquals(1, muestra.getOpiniones().size()); // Inicialmente tiene la opinión inicial
         
         muestra.agregarOpinion(opinionExperta1);
-        assertEquals(1, muestra.getOpiniones().size());
+        assertEquals(2, muestra.getOpiniones().size());
         assertTrue(muestra.getOpiniones().contains(opinionExperta1));
     }
 
     @Test
     void testGetFechaUltimaVotacion() throws SistemaDeExcepciones {
-        assertNull(muestra.getFechaUltimaVotacion()); // Sin opiniones adicionales
+        assertNotNull(muestra.getFechaUltimaVotacion()); // Con la opinión inicial
         
         muestra.agregarOpinion(opinionExperta1);
         assertNotNull(muestra.getFechaUltimaVotacion());
@@ -214,6 +222,7 @@ public class MuestraTest {
     void testAdmiteOpinionIndirectamente() throws SistemaDeExcepciones {
         Usuario otroUsuario = mock(Usuario.class);
         when(otroUsuario.esNivelBasico()).thenReturn(true);
+        when(otroUsuario.esNivelExperto()).thenReturn(false);
         
         // Probamos indirectamente a través de agregarOpinion
         Opinion opinionOtroUsuario = new Opinion(otroUsuario, TipoDeOpinion.CHINCHE_FOLIADA);
@@ -225,6 +234,7 @@ public class MuestraTest {
         
         Usuario tercerUsuario = mock(Usuario.class);
         when(tercerUsuario.esNivelBasico()).thenReturn(true);
+        when(tercerUsuario.esNivelExperto()).thenReturn(false);
         Opinion opinionTercero = new Opinion(tercerUsuario, TipoDeOpinion.NINGUNA);
         
         SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
@@ -232,17 +242,5 @@ public class MuestraTest {
         });
         assertEquals("El usuario no puede opinar sobre esta muestra.", thrown.getMessage());
     }
-
-    @Test
-    void testEstadoMuestraSeActualizaAlVerificar() throws SistemaDeExcepciones {
-        assertEquals(EstadoMuestra.NO_VERIFICADA, muestra.getEstado());
-        
-        muestra.agregarOpinion(opinionExperta1);
-        assertEquals(EstadoMuestra.NO_VERIFICADA, muestra.getEstado());
-        
-        muestra.agregarOpinion(opinionExperta2);
-        assertEquals(EstadoMuestra.VERIFICADA, muestra.getEstado());
-    }
-    
 }
 

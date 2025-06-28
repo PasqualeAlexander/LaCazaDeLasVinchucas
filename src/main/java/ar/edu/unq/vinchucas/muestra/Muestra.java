@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import ar.edu.unq.vinchucas.aplicacion.SistemaDeExcepciones;
+import ar.edu.unq.vinchucas.muestra.estado.EstadoAbierto;
+import ar.edu.unq.vinchucas.muestra.estado.EstadoVerificada;
+import ar.edu.unq.vinchucas.muestra.estado.IEstadoMuestra;
 import ar.edu.unq.vinchucas.usuario.Usuario;
 
 public class Muestra {
@@ -12,7 +15,7 @@ public class Muestra {
     private final LocalDate fechaCreacion;
     private final Usuario usuario;
     private final SistemaDeOpiniones sistemaDeOpiniones;
-    private EstadoMuestra estado;
+    private IEstadoMuestra estado;
 
     public Muestra(String foto, String ubicacion, Usuario usuario, TipoDeOpinion votoInicial) throws SistemaDeExcepciones {
         if (foto == null || foto.isBlank()) {
@@ -32,8 +35,14 @@ public class Muestra {
         this.ubicacion = ubicacion;
         this.usuario = usuario;
         this.fechaCreacion = LocalDate.now();
-        this.estado = EstadoMuestra.NO_VERIFICADA;
-        this.sistemaDeOpiniones = new SistemaDeOpiniones(votoInicial);
+        this.sistemaDeOpiniones = new SistemaDeOpiniones();
+        
+        // Crear la opinión inicial del usuario que sube la muestra
+        Opinion opinionInicial = new Opinion(usuario, votoInicial);
+        this.sistemaDeOpiniones.agregarOpinionInicial(opinionInicial);
+        
+        // Inicializar el estado con la opinión inicial
+        this.estado = new EstadoAbierto(opinionInicial);
     }
 
     public String getFoto() {
@@ -52,8 +61,8 @@ public class Muestra {
         return usuario;
     }
 
-    public EstadoMuestra getEstado() {
-        return estado;
+    public SistemaDeOpiniones getSistemaDeOpiniones() {
+        return sistemaDeOpiniones;
     }
 
     public String getNombreUsuario() {
@@ -61,7 +70,7 @@ public class Muestra {
     }
 
     public TipoDeOpinion getResultado() {
-        return sistemaDeOpiniones.getResultado();
+        return estado.getResultado();
     }
 
     public LocalDate getFechaUltimaVotacion() {
@@ -76,28 +85,26 @@ public class Muestra {
         if (!admiteOpinionDeUsuario(opinion.getUsuario())) {
             throw new SistemaDeExcepciones("El usuario no puede opinar sobre esta muestra.");
         }
+        // Delegar la lógica al estado
+        estado.agregarOpinion(this, opinion);
+
+        // Agregar al historial
         sistemaDeOpiniones.agregarOpinion(opinion);
-        verificarEstado();
     }
 
     public boolean estaVerificada() {
-        return estado == EstadoMuestra.VERIFICADA;
+        return estado instanceof EstadoVerificada;
     }
 
     private boolean admiteOpinionDeUsuario(Usuario usuario) {
         if (usuario.equals(this.usuario)) {
             return false;
         }
-        return sistemaDeOpiniones.admiteOpinionDeUsuario(usuario);
+        return estado.puedeOpinarUsuario(usuario, this);
     }
 
-    private void verificarEstado() {
-        if (correspondeVerificar()) {
-            estado = EstadoMuestra.VERIFICADA;
-        }
-    }
-
-    private boolean correspondeVerificar() {
-        return sistemaDeOpiniones.correspondeVerificar();
+    // Método para cambiar estado (solo accesible desde los estados)
+    public void setEstado(IEstadoMuestra nuevoEstado) {
+        this.estado = nuevoEstado;
     }
 }
