@@ -222,8 +222,16 @@ public class TestIntegralDelSistemaSimplificadoTest {
         assertEquals(1, aplicacion.cantidadOrganizacionesPorTipo(TipoOrganizacion.EDUCATIVA));
 
         // 4.2 Crear zonas de cobertura
-        FuncionalidadExterna notificador = (org, zona, muestra) -> {
-            // Funcionalidad de notificación simple para tests
+        FuncionalidadExterna notificador = new FuncionalidadExterna() {
+            @Override
+            public void nuevoEvento(Organizacion organizacion, ZonaDeCobertura zona, Muestra muestra) {
+                // Funcionalidad de notificación simple para tests
+            }
+            
+            @Override
+            public void muestraVerificada(Organizacion organizacion, ZonaDeCobertura zona, Muestra muestra) {
+                // Funcionalidad de notificación simple para tests
+            }
         };
         
         ZonaDeCobertura zonaBuenosAires = new ZonaDeCobertura("Zona Buenos Aires", ubicacionHospital, 50.0, notificador);
