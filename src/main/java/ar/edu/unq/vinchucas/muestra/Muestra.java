@@ -107,11 +107,9 @@ public class Muestra {
 
     // Método para cambiar estado (solo accesible desde los estados)
     public void setEstado(IEstadoMuestra nuevoEstado) {
-        boolean eraVerificadaAntes = this.estaVerificada();
         this.estado = nuevoEstado;
         
-        // Si cambió a verificada, notificar a los observadores, sino no
-        if (!eraVerificadaAntes && this.estaVerificada()) {
+        if (this.estaVerificada()) {
             notificarMuestraVerificada();
         }
     }
