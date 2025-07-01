@@ -183,25 +183,6 @@ public class AplicacionTest {
         verify(sistemaDeZonas).zonasQueCubren(ubicacionMock);
     }
 
-    @Test
-    public void testProcesarValidacionConMuestraVerificada() {
-        Muestra muestraMock = mock(Muestra.class);
-        when(muestraMock.estaVerificada()).thenReturn(true);
-        
-        aplicacion.procesarValidacion(muestraMock);
-        
-        verify(sistemaDeZonas).procesarNuevaValidacion(muestraMock);
-    }
-
-    @Test
-    public void testProcesarValidacionConMuestraNoVerificada() {
-        Muestra muestraMock = mock(Muestra.class);
-        when(muestraMock.estaVerificada()).thenReturn(false);
-        
-        aplicacion.procesarValidacion(muestraMock);
-        
-        verify(sistemaDeZonas, never()).procesarNuevaValidacion(muestraMock);
-    }
 
     @Test
     public void testEliminarOrganizacion() {

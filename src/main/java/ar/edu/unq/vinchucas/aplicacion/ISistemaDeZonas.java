@@ -13,5 +13,4 @@ public interface ISistemaDeZonas {
     List<ZonaDeCobertura> zonasQueCubren(Muestra muestra);
     List<ZonaDeCobertura> zonasQueCubren(Ubicacion ubicacion);
     void procesarNuevaMuestra(Muestra muestra);
-    void procesarNuevaValidacion(Muestra muestra);
 } 

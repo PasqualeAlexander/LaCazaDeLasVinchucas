@@ -107,36 +107,7 @@ public class SistemaDeZonasTest {
         verify(zona2, never()).registrarMuestra(muestra);
     }
 
-    @Test
-    public void testProcesarNuevaValidacionSoloSiEstaVerificada() {
-        when(muestra.estaVerificada()).thenReturn(false);
-        sistemaDeZonas.agregarZona(zona1);
-        
-        sistemaDeZonas.procesarNuevaValidacion(muestra);
-        
-        // No debe procesar nada si no está verificada
-        verify(zona1, never()).getOrganizacionesSuscriptas();
-        
-        // Ahora la verificamos
-        when(muestra.estaVerificada()).thenReturn(true);
-        sistemaDeZonas.procesarNuevaValidacion(muestra);
-        
-        // Ahora sí debe procesar
-        verify(zona1).getOrganizacionesSuscriptas();
-    }
-
-    @Test
-    public void testProcesarNuevaValidacionConOrganizacionesSuscritas() {
-        when(muestra.estaVerificada()).thenReturn(true);
-        when(zona1.getOrganizacionesSuscriptas()).thenReturn(java.util.List.of(organizacion));
-        sistemaDeZonas.agregarZona(zona1);
-        
-        sistemaDeZonas.procesarNuevaValidacion(muestra);
-        
-        // Verificamos que se notifica a la organización
-        verify(organizacion).procesarNuevaValidacion(muestra, zona1);
-    }
-
+ 
     @Test
     public void testZonasQueCubrenMuestraConUbicacionInvalida() {
         Muestra muestraInvalida = mock(Muestra.class);

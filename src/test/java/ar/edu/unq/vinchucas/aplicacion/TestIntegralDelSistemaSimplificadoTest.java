@@ -308,7 +308,6 @@ public class TestIntegralDelSistemaSimplificadoTest {
         muestra1.agregarOpinion(exp2);
         
         assertTrue(muestra1.estaVerificada());
-        aplicacion.procesarValidacion(muestra1);
 
         // 5.4 Verificar estadísticas finales
         assertEquals(3, aplicacion.getRepositorioDeMuestras().getMuestras().size());

@@ -83,11 +83,6 @@ public class Aplicacion {
         return sistemaDeZonas.zonasQueCubren(ubicacion);
     }
 
-    public void procesarValidacion(Muestra muestra) {
-        if (muestra.estaVerificada()) {
-            sistemaDeZonas.procesarNuevaValidacion(muestra);
-        }
-    }
 
     // === GETTERS PARA ACCESO A SISTEMAS ===
     

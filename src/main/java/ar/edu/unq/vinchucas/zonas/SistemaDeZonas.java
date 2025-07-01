@@ -46,22 +46,13 @@ public class SistemaDeZonas implements ISistemaDeZonas {
     }
 
     @Override
-    public void procesarNuevaMuestra(Muestra muestra) {
+	public void procesarNuevaMuestra(Muestra muestra) {
         List<ZonaDeCobertura> zonasCubiertas = zonasQueCubren(muestra);
         for (ZonaDeCobertura zona : zonasCubiertas) {
             zona.registrarMuestra(muestra);
         }
     }
 
-    @Override
-    public void procesarNuevaValidacion(Muestra muestra) {
-        if (muestra.estaVerificada()) {
-            List<ZonaDeCobertura> zonasCubiertas = zonasQueCubren(muestra);
-            for (ZonaDeCobertura zona : zonasCubiertas) {
-                notificarValidacion(zona, muestra);
-            }
-        }
-    }
 
     private boolean cubre(ZonaDeCobertura zona, Muestra muestra) {
         try {
@@ -76,10 +67,5 @@ public class SistemaDeZonas implements ISistemaDeZonas {
         return zona.getEpicentro().distanciaHasta(ubicacion) <= zona.getRadio();
     }
 
-    private void notificarValidacion(ZonaDeCobertura zona, Muestra muestra) {
-        // Notificar a las organizaciones suscritas sobre la validación
-        for (Organizacion org : zona.getOrganizacionesSuscriptas()) {
-            org.procesarNuevaValidacion(muestra, zona);
-        }
-    }
+
 } 
