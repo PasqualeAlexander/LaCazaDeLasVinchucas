@@ -313,10 +313,10 @@ public class TestIntegralDelSistemaSimplificadoTest {
         assertTrue(resultadoFinal.contains(muestra1));
 
         // 5.6 Verificar que todas las funcionalidades principales están implementadas
-        assertTrue(aplicacion.getRepositorioDeMuestras().getMuestras().size() > 0, "✅ Muestras implementadas");
-        assertTrue(aplicacion.getMuestrasVerificadas().size() > 0, "✅ Verificación implementada");
-        assertTrue(aplicacion.getSistemaDeUsuarios().getUsuariosRegistrados().size() > 0, "✅ Usuarios implementados");
-        assertNotNull(resultadoFinal, "✅ Sistema de filtros implementado");
+        assertTrue(aplicacion.getRepositorioDeMuestras().getMuestras().size() > 0, "Muestras implementadas");
+        assertTrue(aplicacion.getMuestrasVerificadas().size() > 0, "Verificación implementada");
+        assertTrue(aplicacion.getSistemaDeUsuarios().getUsuariosRegistrados().size() > 0, "Usuarios implementados");
+        assertNotNull(resultadoFinal, "Sistema de filtros implementado");
     }
 
     @Test
