@@ -24,8 +24,7 @@ public class FiltroPorZonaTest {
     public void setUp() {
         // Crear zona de cobertura
         Ubicacion epicentro = new Ubicacion(-34.6037, -58.3816); // Buenos Aires
-        FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
-        zona = new ZonaDeCobertura("Zona Buenos Aires", epicentro, 10.0, funcionalidad);
+        zona = new ZonaDeCobertura("Zona Buenos Aires", epicentro, 10.0);
         
         filtro = new FiltroPorZona(zona);
         
@@ -123,7 +122,7 @@ public class FiltroPorZonaTest {
         // Crear una zona diferente
         Ubicacion epicentroCordoba = new Ubicacion(-31.4201, -64.1888);
         FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
-        ZonaDeCobertura zonaCordoba = new ZonaDeCobertura("Zona Córdoba", epicentroCordoba, 5.0, funcionalidad);
+        ZonaDeCobertura zonaCordoba = new ZonaDeCobertura("Zona Córdoba", epicentroCordoba, 5.0);
         
         FiltroPorZona filtroCordoba = new FiltroPorZona(zonaCordoba);
         

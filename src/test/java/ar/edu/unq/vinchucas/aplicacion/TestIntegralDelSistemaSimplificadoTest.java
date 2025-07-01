@@ -221,21 +221,10 @@ public class TestIntegralDelSistemaSimplificadoTest {
         assertEquals(1, aplicacion.cantidadOrganizacionesPorTipo(TipoOrganizacion.SALUD));
         assertEquals(1, aplicacion.cantidadOrganizacionesPorTipo(TipoOrganizacion.EDUCATIVA));
 
-        // 4.2 Crear zonas de cobertura
-        FuncionalidadExterna notificador = new FuncionalidadExterna() {
-            @Override
-            public void nuevoEvento(Organizacion organizacion, ZonaDeCobertura zona, Muestra muestra) {
-                // Funcionalidad de notificación simple para tests
-            }
-            
-            @Override
-            public void muestraVerificada(Organizacion organizacion, ZonaDeCobertura zona, Muestra muestra) {
-                // Funcionalidad de notificación simple para tests
-            }
-        };
+        // 4.2 Crear zonas de cobertura        
         
-        ZonaDeCobertura zonaBuenosAires = new ZonaDeCobertura("Zona Buenos Aires", ubicacionHospital, 50.0, notificador);
-        ZonaDeCobertura zonaCórdoba = new ZonaDeCobertura("Zona Córdoba", ubicacionEscuela, 30.0, notificador);
+        ZonaDeCobertura zonaBuenosAires = new ZonaDeCobertura("Zona Buenos Aires", ubicacionHospital, 50.0);
+        ZonaDeCobertura zonaCórdoba = new ZonaDeCobertura("Zona Córdoba", ubicacionEscuela, 30.0);
         
         aplicacion.registrarZona(zonaBuenosAires);
         aplicacion.registrarZona(zonaCórdoba);
@@ -259,7 +248,7 @@ public class TestIntegralDelSistemaSimplificadoTest {
         // 4.5 VALIDAR SOLAPAMIENTO DE ZONAS (según enunciado)
         // Crear zona que solape con Buenos Aires
         Ubicacion epicentroSolapante = new Ubicacion(-34.6200, -58.4000); // Cerca de BA
-        ZonaDeCobertura zonaSolapante = new ZonaDeCobertura("Zona Solapante", epicentroSolapante, 25.0, notificador);
+        ZonaDeCobertura zonaSolapante = new ZonaDeCobertura("Zona Solapante", epicentroSolapante, 25.0);
         aplicacion.registrarZona(zonaSolapante);
 
         // Verificar solapamiento

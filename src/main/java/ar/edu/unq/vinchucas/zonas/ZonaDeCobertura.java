@@ -12,15 +12,13 @@ public class ZonaDeCobertura implements ObservadorMuestra {
     private final double radio;
     private final List<Organizacion> organizacionesSuscriptas;
     private final List<Muestra> muestrasReportadas;
-    private final FuncionalidadExterna funcionalidadExterna;
 
-    public ZonaDeCobertura(String nombre, Ubicacion epicentro, double radio, FuncionalidadExterna funcionalidadExterna) {
+    public ZonaDeCobertura(String nombre, Ubicacion epicentro, double radio) {
         this.nombre = nombre;
         this.epicentro = epicentro;
         this.radio = radio;
         this.organizacionesSuscriptas = new ArrayList<>();
         this.muestrasReportadas = new ArrayList<>();
-        this.funcionalidadExterna = funcionalidadExterna;
     }
 
     public void suscribirOrganizacion(Organizacion organizacion) {
@@ -52,7 +50,7 @@ public class ZonaDeCobertura implements ObservadorMuestra {
 
     private void notificarNuevaMuestra(Muestra muestra) {
         for (Organizacion organizacion : organizacionesSuscriptas) {
-            funcionalidadExterna.nuevoEvento(organizacion, this, muestra);
+        	organizacion.procesarNuevaMuestra(muestra, this);
         }
     }
 
@@ -93,7 +91,7 @@ public class ZonaDeCobertura implements ObservadorMuestra {
     
     private void notificarMuestraVerificada(Muestra muestra) {
         for (Organizacion organizacion : organizacionesSuscriptas) {
-            funcionalidadExterna.muestraVerificada(organizacion, this, muestra);
+            organizacion.procesarNuevaValidacion(muestra, this);
         }
     }
 } 

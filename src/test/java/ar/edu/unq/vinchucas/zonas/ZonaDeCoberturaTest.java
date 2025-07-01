@@ -16,7 +16,6 @@ public class ZonaDeCoberturaTest {
 
     private ZonaDeCobertura zona;
     private Ubicacion epicentro;
-    private FuncionalidadExterna funcionalidadMock;
     private Organizacion organizacion1;
     private Organizacion organizacion2;
     private Muestra muestra;
@@ -24,14 +23,13 @@ public class ZonaDeCoberturaTest {
     @BeforeEach
     public void setUp() {
         epicentro = new Ubicacion(-34.6037, -58.3816); // Buenos Aires
-        funcionalidadMock = mock(FuncionalidadExterna.class);
-        zona = new ZonaDeCobertura("Zona Centro", epicentro, 10.0, funcionalidadMock);
+        zona = new ZonaDeCobertura("Zona Centro", epicentro, 10.0);
         
-        // Crear organizaciones
+        // Crear organizaciones como spy para poder verificar las llamadas
         Ubicacion ubicacionOrg1 = new Ubicacion(-34.6037, -58.3816);
         Ubicacion ubicacionOrg2 = new Ubicacion(-31.4201, -64.1888);
-        organizacion1 = new OrganizacionImpl("Hospital", ubicacionOrg1, TipoOrganizacion.SALUD, 100);
-        organizacion2 = new OrganizacionImpl("Escuela", ubicacionOrg2, TipoOrganizacion.EDUCATIVA, 50);
+        organizacion1 = spy(new OrganizacionImpl("Hospital", ubicacionOrg1, TipoOrganizacion.SALUD, 100));
+        organizacion2 = spy(new OrganizacionImpl("Escuela", ubicacionOrg2, TipoOrganizacion.EDUCATIVA, 50));
         
         // Crear muestra mock
         muestra = mock(Muestra.class);
@@ -85,7 +83,7 @@ public class ZonaDeCoberturaTest {
         
         assertEquals(1, zona.getMuestrasReportadas().size());
         assertTrue(zona.getMuestrasReportadas().contains(muestra));
-        verify(funcionalidadMock).nuevoEvento(organizacion1, zona, muestra);
+        verify(organizacion1).procesarNuevaMuestra(muestra, zona);
     }
 
     @Test
@@ -96,7 +94,7 @@ public class ZonaDeCoberturaTest {
         zona.registrarMuestra(muestra);
         
         assertEquals(0, zona.getMuestrasReportadas().size());
-        verify(funcionalidadMock, never()).nuevoEvento(any(), any(), any());
+        verify(organizacion1, never()).procesarNuevaMuestra(any(), any());
     }
 
     @Test
@@ -106,8 +104,8 @@ public class ZonaDeCoberturaTest {
         
         zona.registrarMuestra(muestra);
         
-        verify(funcionalidadMock).nuevoEvento(organizacion1, zona, muestra);
-        verify(funcionalidadMock).nuevoEvento(organizacion2, zona, muestra);
+        verify(organizacion1).procesarNuevaMuestra(muestra, zona);
+        verify(organizacion2).procesarNuevaMuestra(muestra, zona);
     }
 
     @Test
@@ -116,8 +114,8 @@ public class ZonaDeCoberturaTest {
         Ubicacion epicentro2 = new Ubicacion(-34.6100, -58.3900); // Cerca de la zona original
         Ubicacion epicentro3 = new Ubicacion(-31.4201, -64.1888); // Lejos de la zona original
         
-        ZonaDeCobertura zona2 = new ZonaDeCobertura("Zona Norte", epicentro2, 5.0, funcionalidadMock);
-        ZonaDeCobertura zona3 = new ZonaDeCobertura("Zona Córdoba", epicentro3, 5.0, funcionalidadMock);
+        ZonaDeCobertura zona2 = new ZonaDeCobertura("Zona Norte", epicentro2, 5.0);
+        ZonaDeCobertura zona3 = new ZonaDeCobertura("Zona Córdoba", epicentro3, 5.0);
         
         List<ZonaDeCobertura> todasLasZonas = List.of(zona, zona2, zona3);
         
