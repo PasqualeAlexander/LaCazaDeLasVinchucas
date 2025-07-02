@@ -8,11 +8,13 @@ import ar.edu.unq.vinchucas.filtros.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Test integral simplificado que valida los casos principales del sistema
@@ -39,13 +41,31 @@ public class TestIntegralDelSistemaSimplificadoTest {
         usuarioBasico2 = crearUsuario("ciudadano2", "pass2");
         expertoValidado = crearUsuario("dr_entomologia", "expertPass");
         
-        // Configurar experto validado externamente
+        // Configurar experto
         expertoValidado.setNivel(new NivelExperto());
         
         // Registrar usuarios
         aplicacion.registrarUsuario(usuarioBasico1);
         aplicacion.registrarUsuario(usuarioBasico2);
         aplicacion.registrarUsuario(expertoValidado);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // Limpiar el estado entre tests para evitar interferencias
+        if (aplicacion != null) {
+            // Limpiar muestras del repositorio
+            aplicacion.getRepositorioDeMuestras().getMuestras().clear();
+            
+            // Limpiar zonas
+            aplicacion.getZonas().clear();
+            
+            // Limpiar organizaciones
+            aplicacion.getOrganizaciones().clear();
+            
+            // Limpiar usuarios (opcional, ya que se recrean en setUp)
+            aplicacion.getSistemaDeUsuarios().getUsuariosRegistrados().clear();
+        }
     }
 
     private Usuario crearUsuario(String nombre, String password) {
@@ -444,5 +464,216 @@ public class TestIntegralDelSistemaSimplificadoTest {
         assertEquals(TipoDeOpinion.PHTIA_CHINCHE, muestraPhtia.getResultado());
         assertEquals(TipoDeOpinion.NINGUNA, muestraNinguna.getResultado());
         assertEquals(TipoDeOpinion.IMAGEN_POCO_CLARA, muestraPocaClara.getResultado());
+    }
+
+    @Test
+    public void testNotificacionNuevaMuestra() throws SistemaDeExcepciones {
+        // Test específico para validar notificación de nueva muestra
+        Ubicacion ubicacionCentral = new Ubicacion(-34.6037, -58.3816);
+        ZonaDeCobertura zonaTest = new ZonaDeCobertura("Zona Test", ubicacionCentral, 10.0);
+        
+        Organizacion organizacionSalud = spy(new OrganizacionImpl("Hospital Test", ubicacionCentral, TipoOrganizacion.SALUD, 100));
+        Organizacion organizacionEducativa = spy(new OrganizacionImpl("Universidad Test", ubicacionCentral, TipoOrganizacion.EDUCATIVA, 200));
+        
+        aplicacion.registrarZona(zonaTest);
+        aplicacion.registrarOrganizacion(organizacionSalud);
+        aplicacion.registrarOrganizacion(organizacionEducativa);
+        aplicacion.suscribirOrganizacionAZona(organizacionSalud, zonaTest);
+        aplicacion.suscribirOrganizacionAZona(organizacionEducativa, zonaTest);
+        
+        Muestra nuevaMuestra = new Muestra("nueva_muestra.jpg", "-34.6037,-58.3816", usuarioBasico1, TipoDeOpinion.VINCHUCA_INFESTANS);
+        
+        aplicacion.registrarMuestra(usuarioBasico1, nuevaMuestra);
+        
+        // Verificar que se notificó a ambas organizaciones
+        verify(organizacionSalud, times(1)).procesarNuevaMuestra(nuevaMuestra, zonaTest);
+        verify(organizacionEducativa, times(1)).procesarNuevaMuestra(nuevaMuestra, zonaTest);
+        
+        assertEquals(1, zonaTest.getMuestrasReportadas().size());
+        assertTrue(zonaTest.getMuestrasReportadas().contains(nuevaMuestra));
+    }
+    
+    @Test
+    public void testNotificacionValidacionMuestra() throws SistemaDeExcepciones {
+        // Test específico para validar notificación de validación de muestra
+        Ubicacion ubicacionCentral = new Ubicacion(-34.6037, -58.3816);
+        ZonaDeCobertura zonaTest = new ZonaDeCobertura("Zona Test", ubicacionCentral, 10.0);
+        
+        Organizacion organizacionSalud = spy(new OrganizacionImpl("Hospital Test", ubicacionCentral, TipoOrganizacion.SALUD, 100));
+        Organizacion organizacionEducativa = spy(new OrganizacionImpl("Universidad Test", ubicacionCentral, TipoOrganizacion.EDUCATIVA, 200));
+        
+        aplicacion.registrarZona(zonaTest);
+        aplicacion.registrarOrganizacion(organizacionSalud);
+        aplicacion.registrarOrganizacion(organizacionEducativa);
+        aplicacion.suscribirOrganizacionAZona(organizacionSalud, zonaTest);
+        aplicacion.suscribirOrganizacionAZona(organizacionEducativa, zonaTest);
+        
+        Muestra muestra = new Muestra("muestra.jpg", "-34.6037,-58.3816", usuarioBasico1, TipoDeOpinion.VINCHUCA_INFESTANS);
+        aplicacion.registrarMuestra(usuarioBasico1, muestra);
+        
+        // Limpiar las llamadas previas
+        clearInvocations(organizacionSalud, organizacionEducativa);
+        
+        // Crear segundo experto para completar la verificación
+        Usuario segundoExperto = crearUsuario("segundo_experto", "pass");
+        segundoExperto.setNivel(new NivelExperto());
+        aplicacion.registrarUsuario(segundoExperto);
+        
+        // Verificar la muestra
+        Opinion opinionExp1 = new Opinion(expertoValidado, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Opinion opinionExp2 = new Opinion(segundoExperto, TipoDeOpinion.VINCHUCA_INFESTANS);
+        
+        muestra.agregarOpinion(opinionExp1);
+        muestra.agregarOpinion(opinionExp2);
+        
+        // Verificar que se notificó a ambas organizaciones sobre la validación
+        verify(organizacionSalud, times(1)).procesarNuevaValidacion(muestra, zonaTest);
+        verify(organizacionEducativa, times(1)).procesarNuevaValidacion(muestra, zonaTest);
+        
+        assertTrue(muestra.estaVerificada());
+    }
+    
+    @Test
+    public void testDesuscripcionOrganizacion() throws SistemaDeExcepciones {
+        // Test específico para validar que las organizaciones desuscritas no reciben notificaciones
+        Ubicacion ubicacionCentral = new Ubicacion(-34.6037, -58.3816);
+        ZonaDeCobertura zonaTest = new ZonaDeCobertura("Zona Test", ubicacionCentral, 10.0);
+        
+        Organizacion organizacionSalud = spy(new OrganizacionImpl("Hospital Test", ubicacionCentral, TipoOrganizacion.SALUD, 100));
+        Organizacion organizacionEducativa = spy(new OrganizacionImpl("Universidad Test", ubicacionCentral, TipoOrganizacion.EDUCATIVA, 200));
+        
+        aplicacion.registrarZona(zonaTest);
+        aplicacion.registrarOrganizacion(organizacionSalud);
+        aplicacion.registrarOrganizacion(organizacionEducativa);
+        aplicacion.suscribirOrganizacionAZona(organizacionSalud, zonaTest);
+        aplicacion.suscribirOrganizacionAZona(organizacionEducativa, zonaTest);
+        
+        // Desuscribir una organización
+        aplicacion.desuscribirOrganizacionDeZona(organizacionSalud, zonaTest);
+        
+        Muestra nuevaMuestra = new Muestra("nueva_muestra.jpg", "-34.6037,-58.3816", usuarioBasico1, TipoDeOpinion.VINCHUCA_GUASAYANA);
+        
+        aplicacion.registrarMuestra(usuarioBasico1, nuevaMuestra);
+        
+        // Verificar que solo se notificó a la organización que sigue suscrita
+        verify(organizacionSalud, never()).procesarNuevaMuestra(nuevaMuestra, zonaTest);
+        verify(organizacionEducativa, times(1)).procesarNuevaMuestra(nuevaMuestra, zonaTest);
+        
+        assertEquals(1, zonaTest.getOrganizacionesSuscriptas().size());
+        assertTrue(zonaTest.getOrganizacionesSuscriptas().contains(organizacionEducativa));
+        assertFalse(zonaTest.getOrganizacionesSuscriptas().contains(organizacionSalud));
+    }
+    
+    @Test
+    public void testValidacionDespuesDesuscripcion() throws SistemaDeExcepciones {
+        // Test específico para validar que una organización desuscrita no recibe notificación de validación
+        Ubicacion ubicacionCentral = new Ubicacion(-34.6037, -58.3816);
+        ZonaDeCobertura zonaTest = new ZonaDeCobertura("Zona Test", ubicacionCentral, 10.0);
+        
+        Organizacion organizacionSalud = spy(new OrganizacionImpl("Hospital Test", ubicacionCentral, TipoOrganizacion.SALUD, 100));
+        Organizacion organizacionEducativa = spy(new OrganizacionImpl("Universidad Test", ubicacionCentral, TipoOrganizacion.EDUCATIVA, 200));
+        
+        aplicacion.registrarZona(zonaTest);
+        aplicacion.registrarOrganizacion(organizacionSalud);
+        aplicacion.registrarOrganizacion(organizacionEducativa);
+        aplicacion.suscribirOrganizacionAZona(organizacionSalud, zonaTest);
+        aplicacion.suscribirOrganizacionAZona(organizacionEducativa, zonaTest);
+        
+        // Registrar muestra con ambas organizaciones suscritas
+        Muestra muestra = new Muestra("muestra.jpg", "-34.6037,-58.3816", usuarioBasico2, TipoDeOpinion.VINCHUCA_INFESTANS);
+        aplicacion.registrarMuestra(usuarioBasico2, muestra);
+        
+        // Desuscribir organización antes de la validación
+        aplicacion.desuscribirOrganizacionDeZona(organizacionSalud, zonaTest);
+        
+        
+        // Crear segundo experto para completar la verificación
+        Usuario segundoExperto = crearUsuario("segundo_experto", "pass");
+        segundoExperto.setNivel(new NivelExperto());
+        aplicacion.registrarUsuario(segundoExperto);
+        
+        // Verificar la muestra
+        Opinion op1 = new Opinion(expertoValidado, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Opinion op2 = new Opinion(segundoExperto, TipoDeOpinion.VINCHUCA_INFESTANS);
+        muestra.agregarOpinion(op1);
+        muestra.agregarOpinion(op2);
+        
+        // Solo la organización educativa debe ser notificada de la validación
+        verify(organizacionSalud, never()).procesarNuevaValidacion(muestra, zonaTest);
+        verify(organizacionEducativa, times(1)).procesarNuevaValidacion(muestra, zonaTest);
+        
+        // Ambas reciben notificacion de registro
+        verify(organizacionSalud, times(1)).procesarNuevaMuestra(muestra, zonaTest);
+        verify(organizacionEducativa, times(1)).procesarNuevaMuestra(muestra, zonaTest);
+        
+        assertTrue(muestra.estaVerificada());
+    }
+    
+    @Test
+    public void testFuncionalidadesExternas() throws SistemaDeExcepciones {
+        // Test específico para validar funcionalidades externas
+        Ubicacion ubicacionCentral = new Ubicacion(-34.6037, -58.3816);
+        ZonaDeCobertura zonaTest = new ZonaDeCobertura("Zona Test", ubicacionCentral, 10.0);
+        
+        Organizacion organizacion = spy(new OrganizacionImpl("Test Org", ubicacionCentral, TipoOrganizacion.SALUD, 100));
+        
+        aplicacion.registrarZona(zonaTest);
+        aplicacion.registrarOrganizacion(organizacion);
+        aplicacion.suscribirOrganizacionAZona(organizacion, zonaTest);
+        
+        // Crear funcionalidades externas mock
+        FuncionalidadExterna funcionalidadNuevaMuestra = mock(FuncionalidadExterna.class);
+        FuncionalidadExterna funcionalidadValidacion = mock(FuncionalidadExterna.class);
+        
+        organizacion.setFuncionalidadNuevaMuestra(funcionalidadNuevaMuestra);
+        organizacion.setFuncionalidadValidacion(funcionalidadValidacion);
+        
+        Muestra muestra = new Muestra("muestra.jpg", "-34.6037,-58.3816", usuarioBasico2, TipoDeOpinion.VINCHUCA_INFESTANS);
+        
+        aplicacion.registrarMuestra(usuarioBasico2, muestra);
+        
+        // Verificar que se llamó la funcionalidad externa para nueva muestra
+        verify(funcionalidadNuevaMuestra, times(1)).nuevoEvento(organizacion, zonaTest, muestra);
+        
+        // Crear segundo experto para completar la verificación
+        Usuario segundoExperto = crearUsuario("segundo_experto", "pass");
+        segundoExperto.setNivel(new NivelExperto());
+        aplicacion.registrarUsuario(segundoExperto);
+        
+        // Verificar la muestra
+        Opinion op1 = new Opinion(expertoValidado, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Opinion op2 = new Opinion(segundoExperto, TipoDeOpinion.VINCHUCA_INFESTANS);
+        muestra.agregarOpinion(op1);
+        muestra.agregarOpinion(op2);
+        
+        // Verificar que se llamó la funcionalidad externa para validación
+        verify(funcionalidadValidacion, times(1)).nuevoEvento(organizacion, zonaTest, muestra);
+        
+        assertTrue(muestra.estaVerificada());
+    }
+    
+    @Test
+    public void testMuestraFueraDeZona() throws SistemaDeExcepciones {
+        // Test específico para validar que las muestras fuera de zona no generan notificaciones
+        Ubicacion ubicacionCentral = new Ubicacion(-34.6037, -58.3816);
+        ZonaDeCobertura zonaTest = new ZonaDeCobertura("Zona Test", ubicacionCentral, 10.0);
+        
+        Organizacion organizacion = spy(new OrganizacionImpl("Test Org", ubicacionCentral, TipoOrganizacion.SALUD, 100));
+        
+        aplicacion.registrarZona(zonaTest);
+        aplicacion.registrarOrganizacion(organizacion);
+        aplicacion.suscribirOrganizacionAZona(organizacion, zonaTest);
+        
+        // Muestra fuera de zona (Córdoba)
+        Muestra muestraFueraZona = new Muestra("fuera_zona.jpg", "-31.4201,-64.1888", usuarioBasico1, TipoDeOpinion.VINCHUCA_SORDIDA);
+        
+        aplicacion.registrarMuestra(usuarioBasico1, muestraFueraZona);
+        
+        // Verificar que NO se notificó sobre la muestra fuera de zona
+        verify(organizacion, never()).procesarNuevaMuestra(muestraFueraZona, zonaTest);
+        
+        // Verificar que la muestra no está en la zona
+        assertFalse(zonaTest.getMuestrasReportadas().contains(muestraFueraZona));
+        assertEquals(0, zonaTest.getMuestrasReportadas().size());
     }
 } 
