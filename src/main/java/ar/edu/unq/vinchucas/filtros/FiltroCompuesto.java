@@ -4,7 +4,7 @@ import ar.edu.unq.vinchucas.muestra.Muestra;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FiltroCompuesto implements Filtro {
+public class FiltroCompuesto extends FiltroAbstracto {
     private final List<Filtro> filtros;
     private final OperadorStrategy operadorStrategy;
 
@@ -18,13 +18,10 @@ public class FiltroCompuesto implements Filtro {
     }
 
     @Override
-    public List<Muestra> filtrar(List<Muestra> muestras) {
+    protected boolean cumpleCriterio(Muestra muestra) {
         if (filtros.isEmpty()) {
-            return muestras;
+            return true; // Si no hay filtros, todas las muestras cumplen el criterio
         }
-
-        return muestras.stream()
-                .filter(muestra -> operadorStrategy.evaluar(muestra, filtros))
-                .toList();
+        return operadorStrategy.evaluar(muestra, filtros);
     }
 } 
