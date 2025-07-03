@@ -3,6 +3,7 @@ package ar.edu.unq.vinchucas.muestra.estado;
 import ar.edu.unq.vinchucas.aplicacion.SistemaDeExcepciones;
 import ar.edu.unq.vinchucas.muestra.Muestra;
 import ar.edu.unq.vinchucas.muestra.Opinion;
+import ar.edu.unq.vinchucas.muestra.TipoDeOpinion;
 import ar.edu.unq.vinchucas.usuario.Usuario;
 
 public abstract class EstadoAbstracto implements IEstadoMuestra {
@@ -37,6 +38,16 @@ public abstract class EstadoAbstracto implements IEstadoMuestra {
     // Método por defecto para verificar si un usuario puede opinar
     // Los estados específicos pueden sobreescribir este método
     @Override
-    public abstract boolean puedeOpinarUsuario(Usuario usuario, Muestra muestra);
+    public boolean puedeOpinarUsuario(Usuario usuario, Muestra muestra){
+        return true; // por defecto, cualquier usuario puede opinar
+    }
+    
+    // Método abstracto para obtener el resultado actual de la muestra
+    @Override
+    public abstract TipoDeOpinion getResultado();
+    
+    // Método abstracto para verificar si la muestra está verificada
+    @Override
+    public abstract boolean esVerificada();
     
 } 
