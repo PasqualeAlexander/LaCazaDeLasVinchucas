@@ -68,7 +68,7 @@ public class NivelBasicoTest {
             usuario.opinar(muestra, new Opinion(usuario, tipo))
         );
 
-        assertEquals("El usuario no puede opinar sobre esta muestra.", ex.getMessage());
+        assertEquals("El usuario ya ha opinado sobre esta muestra", ex.getMessage());
     }
 
 }

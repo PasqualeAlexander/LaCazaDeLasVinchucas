@@ -106,7 +106,7 @@ public class MuestraTest {
         SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
             muestra.agregarOpinion(nuevaOpinion);
         });
-        assertEquals("El usuario no puede opinar sobre esta muestra.", thrown.getMessage());
+        assertEquals("El usuario no puede opinar en el estado actual de la muestra", thrown.getMessage());
 
         assertEquals(TipoDeOpinion.VINCHUCA_SORDIDA, muestra.getResultado());
     }
@@ -118,7 +118,7 @@ public class MuestraTest {
         SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
             muestra.agregarOpinion(opinionCreador);
         });
-        assertEquals("El usuario no puede opinar sobre esta muestra.", thrown.getMessage());
+        assertEquals("El usuario no puede opinar sobre su propia muestra", thrown.getMessage());
 
         assertEquals(TipoDeOpinion.VINCHUCA_INFESTANS, muestra.getResultado());
     }
@@ -240,7 +240,7 @@ public class MuestraTest {
         SistemaDeExcepciones thrown = assertThrows(SistemaDeExcepciones.class, () -> {
             muestra.agregarOpinion(opinionTercero);
         });
-        assertEquals("El usuario no puede opinar sobre esta muestra.", thrown.getMessage());
+        assertEquals("El usuario no puede opinar en el estado actual de la muestra", thrown.getMessage());
     }
 }
 

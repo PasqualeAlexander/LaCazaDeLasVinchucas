@@ -34,14 +34,20 @@ public class EstadoVerificadaTest {
     @Test
     public void testNoSePuedeAgregarOpinionLanzaExcepcion() {
         Opinion opinionMock = mock(Opinion.class);
+        Usuario usuarioMock = mock(Usuario.class);
+        Usuario otroUsuarioMock = mock(Usuario.class);
         Muestra muestraMock = mock(Muestra.class);
+        
+        // Configurar los mocks para que pasen las validaciones previas
+        when(opinionMock.getUsuario()).thenReturn(usuarioMock);
+        when(muestraMock.getUsuario()).thenReturn(otroUsuarioMock); // Usuario diferente al que opina
 
         SistemaDeExcepciones thrown = assertThrows(
             SistemaDeExcepciones.class,
             () -> estadoVerificada.agregarOpinion(muestraMock, opinionMock)
         );
 
-        assertEquals("No se pueden agregar opiniones a una muestra verificada", thrown.getMessage());
+        assertEquals("El usuario no puede opinar en el estado actual de la muestra", thrown.getMessage());
     }
 
     @Test

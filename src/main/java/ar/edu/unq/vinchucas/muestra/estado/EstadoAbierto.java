@@ -8,7 +8,7 @@ import ar.edu.unq.vinchucas.usuario.Usuario;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EstadoAbierto implements IEstadoMuestra {
+public class EstadoAbierto extends EstadoAbstracto {
     private TipoDeOpinion resultado;
     private final Map<TipoDeOpinion, Integer> votos;
     
@@ -19,12 +19,8 @@ public class EstadoAbierto implements IEstadoMuestra {
     }
     
     @Override
-    public void agregarOpinion(Muestra muestra, Opinion opinion) throws SistemaDeExcepciones {
+    protected void procesarOpinion(Muestra muestra, Opinion opinion) throws SistemaDeExcepciones {
         Usuario usuario = opinion.getUsuario();
-        
-        if (!puedeOpinarUsuario(usuario, muestra)) {
-            throw new SistemaDeExcepciones("El usuario no puede opinar en estado abierto");
-        }
         
         // Si es un experto, cambiar inmediatamente a estado experto
         if (usuario.esNivelExperto()) {
@@ -41,9 +37,8 @@ public class EstadoAbierto implements IEstadoMuestra {
     @Override
     public boolean puedeOpinarUsuario(Usuario usuario, Muestra muestra) {
         // En estado abierto, TODOS los usuarios pueden opinar
-        // excepto el que subió la muestra y los que ya opinaron
-        return !usuario.equals(muestra.getUsuario()) &&
-               !muestra.getSistemaDeOpiniones().yaOpinoElUsuario(usuario);
+        // Las validaciones de usuario creador y ya opinó se hacen en la clase abstracta
+        return true;
     }
     
     @Override
@@ -73,8 +68,8 @@ public class EstadoAbierto implements IEstadoMuestra {
         this.resultado = empate ? TipoDeOpinion.NO_DEFINIDO : nuevoResultado;
     }
 
-	@Override
-	public boolean esVerificada() {
-		return false;
-	}
+    @Override
+    public boolean esVerificada() {
+        return false;
+    }
 } 

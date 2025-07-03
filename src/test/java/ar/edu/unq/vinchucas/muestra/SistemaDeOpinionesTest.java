@@ -33,17 +33,7 @@ public class SistemaDeOpinionesTest {
     }
 
     @Test
-    public void testAgregarOpinionInicialSeRegistra() {
-        Opinion opinionInicial = new Opinion(usuarioMock, TipoDeOpinion.VINCHUCA_INFESTANS);
-        
-        sistema.agregarOpinionInicial(opinionInicial);
-
-        assertEquals(1, sistema.getOpiniones().size());
-        assertTrue(sistema.getOpiniones().contains(opinionInicial));
-    }
-
-    @Test
-    public void testAgregarOpinionSeRegistra() {
+    public void testAgregarOpinionSeRegistra() throws SistemaDeExcepciones {
         Opinion opinion = new Opinion(usuarioMock, TipoDeOpinion.VINCHUCA_INFESTANS);
         
         sistema.agregarOpinion(opinion);
@@ -53,20 +43,41 @@ public class SistemaDeOpinionesTest {
     }
 
     @Test
-    public void testYaOpinoElUsuarioRetornaTrueSiYaOpino() {
-        Opinion opinion = new Opinion(usuarioMock, TipoDeOpinion.VINCHUCA_INFESTANS);
-        sistema.agregarOpinion(opinion);
-
-        assertTrue(sistema.yaOpinoElUsuario(usuarioMock));
+    public void testAgregarOpinionDuplicadaLanzaExcepcion() throws SistemaDeExcepciones {
+        Opinion opinion1 = new Opinion(usuarioMock, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Opinion opinion2 = new Opinion(usuarioMock, TipoDeOpinion.CHINCHE_FOLIADA);
+        
+        // Primera opinión se agrega correctamente
+        sistema.agregarOpinion(opinion1);
+        
+        // Segunda opinión del mismo usuario debe lanzar excepción
+        assertThrows(SistemaDeExcepciones.class, () -> {
+            sistema.agregarOpinion(opinion2);
+        });
+        
+        // Solo debe haber una opinión
+        assertEquals(1, sistema.getOpiniones().size());
     }
 
     @Test
-    public void testYaOpinoElUsuarioRetornaFalseSiNoOpino() {
-        assertFalse(sistema.yaOpinoElUsuario(usuarioMock));
+    public void testAgregarOpinionNulaLanzaExcepcion() {
+        assertThrows(SistemaDeExcepciones.class, () -> {
+            sistema.agregarOpinion(null);
+        });
     }
 
     @Test
-    public void testGetFechaUltimaOpinionDevuelveFechaCorrecta() {
+    public void testAgregarOpinionConUsuarioNuloLanzaExcepcion() {
+        Opinion opinionConUsuarioNulo = mock(Opinion.class);
+        when(opinionConUsuarioNulo.getUsuario()).thenReturn(null);
+        
+        assertThrows(SistemaDeExcepciones.class, () -> {
+            sistema.agregarOpinion(opinionConUsuarioNulo);
+        });
+    }
+
+    @Test
+    public void testGetFechaUltimaOpinionDevuelveFechaCorrecta() throws SistemaDeExcepciones {
         LocalDate fecha = LocalDate.of(2025, 6, 6);
         
         // Mock de la fecha
@@ -85,4 +96,16 @@ public class SistemaDeOpinionesTest {
         assertNull(sistema.getFechaUltimaOpinion());
     }
 
+    @Test
+    public void testMultiplesOpinionesDeDiferentesUsuarios() throws SistemaDeExcepciones {
+        Opinion opinion1 = new Opinion(usuarioMock, TipoDeOpinion.VINCHUCA_INFESTANS);
+        Opinion opinion2 = new Opinion(expertoMock, TipoDeOpinion.CHINCHE_FOLIADA);
+        
+        sistema.agregarOpinion(opinion1);
+        sistema.agregarOpinion(opinion2);
+
+        assertEquals(2, sistema.getOpiniones().size());
+        assertTrue(sistema.getOpiniones().contains(opinion1));
+        assertTrue(sistema.getOpiniones().contains(opinion2));
+    }
 }

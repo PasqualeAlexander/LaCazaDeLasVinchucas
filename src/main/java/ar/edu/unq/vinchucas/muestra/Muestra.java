@@ -38,9 +38,15 @@ public class Muestra {
         this.fechaCreacion = LocalDate.now();
         this.sistemaDeOpiniones = new SistemaDeOpiniones();
         this.observadores = new ArrayList<>();
+        
         // Crear la opinión inicial del usuario que sube la muestra
         Opinion opinionInicial = new Opinion(usuario, votoInicial);
-        this.sistemaDeOpiniones.agregarOpinionInicial(opinionInicial);
+        try {
+            this.sistemaDeOpiniones.agregarOpinion(opinionInicial);
+        } catch (SistemaDeExcepciones e) {
+            // Esto nunca debería pasar en el constructor porque es la primera opinión
+            throw new SistemaDeExcepciones("Error al crear la muestra: " + e.getMessage());
+        }
         
         // Inicializar el estado con la opinión inicial
         this.estado = new EstadoAbierto(opinionInicial);
@@ -62,9 +68,6 @@ public class Muestra {
         return usuario;
     }
 
-    public SistemaDeOpiniones getSistemaDeOpiniones() {
-        return sistemaDeOpiniones;
-    }
 
     public String getNombreUsuario() {
         return usuario.getNombreUsuario();
@@ -83,25 +86,17 @@ public class Muestra {
     }
 
     public void agregarOpinion(Opinion opinion) throws SistemaDeExcepciones {
-        if (!admiteOpinionDeUsuario(opinion.getUsuario())) {
-            throw new SistemaDeExcepciones("El usuario no puede opinar sobre esta muestra.");
-        }
-        // Delegar la lógica al estado
+        // Delegar completamente al estado - él maneja todas las validaciones
         estado.agregarOpinion(this, opinion);
+    }
 
-        // Agregar al historial
+    // Método para que el estado pueda almacenar la opinión después de validarla
+    public void almacenarOpinion(Opinion opinion) throws SistemaDeExcepciones {
         sistemaDeOpiniones.agregarOpinion(opinion);
     }
 
     public boolean estaVerificada() {
         return estado.esVerificada();
-    }
-
-    private boolean admiteOpinionDeUsuario(Usuario usuario) {
-        if (usuario.equals(this.usuario)) {
-            return false;
-        }
-        return estado.puedeOpinarUsuario(usuario, this);
     }
 
     // Método para cambiar estado (solo accesible desde los estados)

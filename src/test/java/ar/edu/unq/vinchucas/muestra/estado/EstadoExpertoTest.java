@@ -36,7 +36,6 @@ public class EstadoExpertoTest {
         when(usuarioBasico.esNivelExperto()).thenReturn(false);
         when(usuarioExperto1.esNivelExperto()).thenReturn(true);
         when(usuarioExperto2.esNivelExperto()).thenReturn(true);
-        when(muestra.getSistemaDeOpiniones()).thenReturn(sistemaOpiniones);
         when(muestra.getUsuario()).thenReturn(usuarioBasico);
         
         // Crear opinión inicial de experto
@@ -52,9 +51,6 @@ public class EstadoExpertoTest {
 
     @Test
     public void testSoloExpertosPuedenOpinar() {
-        when(sistemaOpiniones.yaOpinoElUsuario(usuarioExperto2)).thenReturn(false);
-        when(sistemaOpiniones.yaOpinoElUsuario(usuarioBasico)).thenReturn(false);
-        
         assertTrue(estadoExperto.puedeOpinarUsuario(usuarioExperto2, muestra));
         assertFalse(estadoExperto.puedeOpinarUsuario(usuarioBasico, muestra));
     }
@@ -65,20 +61,20 @@ public class EstadoExpertoTest {
         when(expertoPropietario.esNivelExperto()).thenReturn(true);
         when(muestra.getUsuario()).thenReturn(expertoPropietario);
         
-        assertFalse(estadoExperto.puedeOpinarUsuario(expertoPropietario, muestra));
+        // puedeOpinarUsuario() solo verifica si es experto, la validación de creador se hace en EstadoAbstracto
+        assertTrue(estadoExperto.puedeOpinarUsuario(expertoPropietario, muestra));
     }
 
     @Test
     public void testExpertoQueYaOpinoNoPuedeOpinarDeNuevo() {
-        when(sistemaOpiniones.yaOpinoElUsuario(usuarioExperto2)).thenReturn(true);
-        
-        assertFalse(estadoExperto.puedeOpinarUsuario(usuarioExperto2, muestra));
+        // Esta validación ahora se hace en SistemaDeOpiniones, no aquí
+        // puedeOpinarUsuario() solo verifica si es experto
+        assertTrue(estadoExperto.puedeOpinarUsuario(usuarioExperto2, muestra));
     }
 
     @Test
     public void testSegundoExpertoConMismaOpinionVerificaMuestra() throws SistemaDeExcepciones {
         Opinion segundaOpinion = new Opinion(usuarioExperto2, TipoDeOpinion.VINCHUCA_INFESTANS);
-        when(sistemaOpiniones.yaOpinoElUsuario(usuarioExperto2)).thenReturn(false);
         
         estadoExperto.agregarOpinion(muestra, segundaOpinion);
         
@@ -89,7 +85,6 @@ public class EstadoExpertoTest {
     @Test
     public void testSegundoExpertoConOpinionDiferenteGeneraNoDefinido() throws SistemaDeExcepciones {
         Opinion segundaOpinion = new Opinion(usuarioExperto2, TipoDeOpinion.CHINCHE_FOLIADA);
-        when(sistemaOpiniones.yaOpinoElUsuario(usuarioExperto2)).thenReturn(false);
         
         estadoExperto.agregarOpinion(muestra, segundaOpinion);
         
@@ -109,9 +104,12 @@ public class EstadoExpertoTest {
     }
 
     @Test
-    public void testExpertoQueYaOpinoNoPuedeOpinarLanzaExcepcion() {
+    public void testExpertoQueYaOpinoNoPuedeOpinarLanzaExcepcion() throws SistemaDeExcepciones {
         Opinion opinion = new Opinion(usuarioExperto1, TipoDeOpinion.CHINCHE_FOLIADA);
-        when(sistemaOpiniones.yaOpinoElUsuario(usuarioExperto1)).thenReturn(true);
+        
+        // Configurar el mock para que simule que el usuario ya opinó
+        doThrow(new SistemaDeExcepciones("El usuario ya ha opinado sobre esta muestra"))
+            .when(muestra).almacenarOpinion(opinion);
         
         assertThrows(SistemaDeExcepciones.class, () -> {
             estadoExperto.agregarOpinion(muestra, opinion);
@@ -123,7 +121,6 @@ public class EstadoExpertoTest {
         // Primer experto ya opinó VINCHUCA_INFESTANS
         // Segundo experto opina CHINCHE_FOLIADA (resultado = NO_DEFINIDO)
         Opinion segundaOpinion = new Opinion(usuarioExperto2, TipoDeOpinion.CHINCHE_FOLIADA);
-        when(sistemaOpiniones.yaOpinoElUsuario(usuarioExperto2)).thenReturn(false);
         estadoExperto.agregarOpinion(muestra, segundaOpinion);
         
         assertEquals(TipoDeOpinion.NO_DEFINIDO, estadoExperto.getResultado());
@@ -131,7 +128,6 @@ public class EstadoExpertoTest {
         // Tercer experto opina igual que el primero
         Usuario usuarioExperto3 = mock(Usuario.class);
         when(usuarioExperto3.esNivelExperto()).thenReturn(true);
-        when(sistemaOpiniones.yaOpinoElUsuario(usuarioExperto3)).thenReturn(false);
         
         Opinion terceraOpinion = new Opinion(usuarioExperto3, TipoDeOpinion.VINCHUCA_INFESTANS);
         estadoExperto.agregarOpinion(muestra, terceraOpinion);

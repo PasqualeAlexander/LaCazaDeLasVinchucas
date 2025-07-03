@@ -8,7 +8,7 @@ import ar.edu.unq.vinchucas.usuario.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EstadoExperto implements IEstadoMuestra {
+public class EstadoExperto extends EstadoAbstracto {
     private TipoDeOpinion resultado;
     private final List<TipoDeOpinion> opinionesExpertos;
     
@@ -19,13 +19,7 @@ public class EstadoExperto implements IEstadoMuestra {
     }
     
     @Override
-    public void agregarOpinion(Muestra muestra, Opinion opinion) throws SistemaDeExcepciones {
-        Usuario usuario = opinion.getUsuario();
-        
-        if (!puedeOpinarUsuario(usuario, muestra)) {
-            throw new SistemaDeExcepciones("El usuario no puede opinar en estado experto");
-        }
-        
+    protected void procesarOpinion(Muestra muestra, Opinion opinion) throws SistemaDeExcepciones {
         TipoDeOpinion tipoOpinion = opinion.getTipoDeOpinion();
         
         // Verificar si ya existe una opinión del mismo tipo
@@ -44,11 +38,9 @@ public class EstadoExperto implements IEstadoMuestra {
     
     @Override
     public boolean puedeOpinarUsuario(Usuario usuario, Muestra muestra) {
-        // En estado experto, solo expertos pueden opinar
-        // y no pueden opinar sobre sus propias muestras
-        return usuario.esNivelExperto() && 
-               !usuario.equals(muestra.getUsuario()) &&
-               !muestra.getSistemaDeOpiniones().yaOpinoElUsuario(usuario);
+        // Solo los expertos pueden opinar en este estado
+        // Las validaciones de usuario creador y ya opinó se hacen en la clase abstracta
+        return usuario.esNivelExperto();
     }
     
     @Override
@@ -56,8 +48,8 @@ public class EstadoExperto implements IEstadoMuestra {
         return resultado;
     }
 
-	@Override
-	public boolean esVerificada() {
-		return false;
-	}
+    @Override
+    public boolean esVerificada() {
+        return false;
+    }
 } 

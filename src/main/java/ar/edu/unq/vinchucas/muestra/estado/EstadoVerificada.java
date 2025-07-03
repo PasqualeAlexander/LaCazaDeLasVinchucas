@@ -6,7 +6,7 @@ import ar.edu.unq.vinchucas.muestra.Opinion;
 import ar.edu.unq.vinchucas.muestra.TipoDeOpinion;
 import ar.edu.unq.vinchucas.usuario.Usuario;
 
-public class EstadoVerificada implements IEstadoMuestra {
+public class EstadoVerificada extends EstadoAbstracto {
     private final TipoDeOpinion resultado;
     
     public EstadoVerificada(TipoDeOpinion resultado) {
@@ -14,7 +14,9 @@ public class EstadoVerificada implements IEstadoMuestra {
     }
     
     @Override
-    public void agregarOpinion(Muestra muestra, Opinion opinion) throws SistemaDeExcepciones {
+    protected void procesarOpinion(Muestra muestra, Opinion opinion) throws SistemaDeExcepciones {
+        // Las muestras verificadas no permiten opiniones adicionales
+        // Esta excepción nunca debería lanzarse ya que puedeOpinarUsuario devuelve false
         throw new SistemaDeExcepciones("No se pueden agregar opiniones a una muestra verificada");
     }
     
@@ -30,6 +32,6 @@ public class EstadoVerificada implements IEstadoMuestra {
     
     @Override
     public boolean esVerificada(){
-    	return true;
+        return true;
     }
 } 

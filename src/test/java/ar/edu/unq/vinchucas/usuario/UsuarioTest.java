@@ -56,7 +56,7 @@ public class UsuarioTest {
             otroUsuario.opinar(muestra, opinion);
         });
 
-        assertEquals("El usuario no puede opinar sobre esta muestra.", excepcion.getMessage());
+        assertEquals("El usuario ya ha opinado sobre esta muestra", excepcion.getMessage());
     }
 
     @Test
