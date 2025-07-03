@@ -5,7 +5,6 @@ import java.util.List;
 
 import ar.edu.unq.vinchucas.aplicacion.SistemaDeExcepciones;
 import ar.edu.unq.vinchucas.muestra.estado.EstadoAbierto;
-import ar.edu.unq.vinchucas.muestra.estado.EstadoVerificada;
 import ar.edu.unq.vinchucas.muestra.estado.IEstadoMuestra;
 import ar.edu.unq.vinchucas.usuario.Usuario;
 import java.util.ArrayList;
