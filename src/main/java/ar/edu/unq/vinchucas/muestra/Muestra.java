@@ -41,12 +41,9 @@ public class Muestra {
         
         // Crear la opinión inicial del usuario que sube la muestra
         Opinion opinionInicial = new Opinion(usuario, votoInicial);
-        try {
-            this.sistemaDeOpiniones.agregarOpinion(opinionInicial);
-        } catch (SistemaDeExcepciones e) {
-            // Esto nunca debería pasar en el constructor porque es la primera opinión
-            throw new SistemaDeExcepciones("Error al crear la muestra: " + e.getMessage());
-        }
+        
+        this.sistemaDeOpiniones.agregarOpinion(opinionInicial);
+        
         
         // Inicializar el estado con la opinión inicial
         this.estado = new EstadoAbierto(opinionInicial);
